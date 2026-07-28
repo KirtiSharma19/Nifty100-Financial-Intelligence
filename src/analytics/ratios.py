@@ -134,4 +134,61 @@ def calculate_ratios(pl_df, bs_df):
         "debt_to_equity"
     ] = 0 
 
+    # Return On Capital Employed (ROCE)
+    capital_employed = (
+        merged["equity_capital"] +
+        merged["reserves"] +
+        merged["borrowings"]
+    )
+
+    merged["roce_pct"] = (
+        merged["operating_profit"] /
+        capital_employed
+    ) * 100
+
+    merged.loc[
+        capital_employed <= 0,
+        "roce_pct"
+    ] = None
+
+    # Return On Assets (ROA)
+    merged["roa_pct"] = (
+        merged["net_profit"] /
+        merged["total_assets"]
+    ) * 100
+
+    merged.loc[
+        merged["total_assets"] <= 0,
+        "roa_pct"
+    ] = None
+
+    # Interest Coverage Ratio
+    merged["interest_coverage"] = (
+        merged["operating_profit"] +
+        merged["other_income"]
+    ) / merged["interest"]
+
+    merged.loc[
+        merged["interest"] == 0,
+        "interest_coverage"
+    ] = None
+
+    merged["icr_label"] = ""
+
+    merged.loc[
+        merged["interest"] == 0,
+        "icr_label"
+    ] = "Debt Free"
+
+    # Asset Turnover
+    merged["asset_turnover"] = (
+        merged["sales"] /
+        merged["total_assets"]
+    )
+
+    merged.loc[
+        merged["total_assets"] <= 0,
+        "asset_turnover"
+    ] = None
+
     return merged
