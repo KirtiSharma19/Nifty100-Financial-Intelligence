@@ -216,3 +216,16 @@ def calculate_ratios(pl_df, bs_df):
             )
     return merged
 
+def calculate_all_ratios(pl, bs, cf):
+
+    merged = pl.merge(
+        bs,
+        on=["company_id", "year"]
+    )
+
+    merged = merged.merge(
+        cf,
+        on=["company_id", "year"]
+    )
+
+    return merged
