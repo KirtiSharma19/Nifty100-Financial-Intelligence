@@ -1,26 +1,23 @@
 from src.services.ratio_engine import DatasetBuilder
 
+engine = DatasetBuilder()
 
-class CompanyDashboard:
+df = engine.build_dataset()
 
-    def top_quality_companies(self):
+company = "Abbott India Ltd"
 
-        engine = RatioEngine()
+company_df = df[
+    df["company_name"] == company
+]
 
-        df = engine.build_dataset()
-
-        top = (
-            df.sort_values(
-                "quality_score",
-                ascending=False
-            )
-            .drop_duplicates("company_id")
-            .head(10)
-        )
-
-        return top[
-            [
-                "company_id",
-                "quality_score"
-            ]
-        ]
+print(company_df[
+    [
+        "year",
+        "quality_score",
+        "net_profit_margin_pct",
+        "operating_profit_margin_pct",
+        "debt_to_equity",
+        "return_on_equity_pct",
+        "free_cash_flow_cr"
+    ]
+])
