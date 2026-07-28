@@ -13,9 +13,10 @@ print(
         [
             "company_id",
             "year",
-            "sales",
-            "net_profit",
-            "net_profit_margin_pct"
+            "net_profit_margin_pct",
+            "operating_profit_margin_pct",
+            "roe_pct",
+            "debt_to_equity"
         ]
     ].head(10)
 )

@@ -97,4 +97,41 @@ def calculate_ratios(pl_df, bs_df):
         "net_profit_margin_pct"
     ] = None
 
+        # Operating Profit Margin
+    merged["operating_profit_margin_pct"] = (
+        merged["operating_profit"] / merged["sales"]
+    ) * 100
+
+    merged.loc[
+        merged["sales"] == 0,
+        "operating_profit_margin_pct"
+    ] = None
+
+    # Return On Equity
+    merged["roe_pct"] = (
+        merged["net_profit"] /
+        (merged["equity_capital"] + merged["reserves"])
+    ) * 100
+
+    merged.loc[
+        (merged["equity_capital"] + merged["reserves"]) <= 0,
+        "roe_pct"
+    ] = None
+
+    # Debt To Equity
+    merged["debt_to_equity"] = (
+        merged["borrowings"] /
+        (merged["equity_capital"] + merged["reserves"])
+    )
+
+    merged.loc[
+        (merged["equity_capital"] + merged["reserves"]) <= 0,
+        "debt_to_equity"
+    ] = None
+
+    merged.loc[
+        merged["borrowings"] == 0,
+        "debt_to_equity"
+    ] = 0 
+
     return merged
