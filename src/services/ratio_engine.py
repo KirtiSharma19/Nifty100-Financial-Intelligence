@@ -1,6 +1,7 @@
 from src.utils.database import get_table
 from src.analytics.ratios import calculate_all_ratios
 from pathlib import Path
+from src.analytics.company_score import CompanyScore
 
 
 class RatioEngine:
@@ -52,6 +53,24 @@ class RatioEngine:
             lambda x: CashflowKPI.capex_intensity(
                 x["investing_activity"],
                 x["sales"]
+            ),
+            axis=1
+        )
+
+        merged["return_on_equity_pct"] = merged.apply(
+            lambda x: (
+                (x["net_profit"] / (x["equity_capital"] + x["reserves"])) * 100
+                if (x["equity_capital"] + x["reserves"]) != 0
+                else None
+            ),
+            axis=1
+        )
+        
+        merged["quality_score"] = merged.apply(
+            lambda x: CompanyScore.score(
+                x["return_on_equity_pct"],
+                x["debt_to_equity"],
+                x["net_profit_margin_pct"]
             ),
             axis=1
         )
