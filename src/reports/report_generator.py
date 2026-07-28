@@ -1,22 +1,30 @@
-from pathlib import Path
-
 from src.services.ratio_engine import DatasetBuilder
 
 engine = DatasetBuilder()
 
 df = engine.build_dataset()
 
-output = Path("exports")
-output.mkdir(exist_ok=True)
+columns = [
+    "company_name",
+    "broad_sector",
+    "year",
+    "quality_score",
+    "net_profit_margin_pct",
+    "operating_profit_margin_pct",
+    "return_on_equity_pct",
+    "debt_to_equity",
+    "free_cash_flow_cr",
+    "capex_cr",
+    "cash_from_operations_cr"
+]
 
-latest = df[df["year"] == df["year"].max()]
+report = df[columns]
 
-latest.to_csv(
-    output / "financial_report.csv",
+report.to_csv(
+    "exports/final_financial_report.csv",
     index=False
 )
 
-print("=" * 70)
-print("FINANCIAL REPORT GENERATED")
-print("=" * 70)
-print(output / "financial_report.csv")
+print()
+print("Final Financial Report Generated")
+print(report.head())
