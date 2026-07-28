@@ -4,6 +4,7 @@ from pathlib import Path
 from src.utils.paths import DATABASE_FILE, BASE_DIR
 import pandas as pd
 from src.etl.loader import load_all_data
+from datetime import datetime
 
 
 class DatabaseLoader:
@@ -36,9 +37,13 @@ class DatabaseLoader:
 
         conn = sqlite3.connect(self.database)
 
+        audit = []
+
         print("\nLoading Tables Into SQLite...\n")
 
         for table_name, df in datasets.items():
+
+            start = datetime.now()
 
             df.to_sql(
                 table_name,
@@ -47,17 +52,40 @@ class DatabaseLoader:
                 index=False
             )
 
+            end = datetime.now()
+
+            audit.append(
+                {
+                "table_name": table_name,
+                "rows_loaded": len(df),
+                "columns": len(df.columns),
+                "status": "SUCCESS",
+                "load_time_ms": round(
+                    (end - start).total_seconds() * 1000,
+                    2
+                ),
+                }
+            )
+
             print(
                 f"[OK] {table_name:<20}"
                 f"Rows : {len(df)}"
             )
 
         conn.commit()
-
         conn.close()
+
+        audit_df = pd.DataFrame(audit)
+
+        audit_df.to_csv(
+            "output/load_audit.csv",
+            index=False
+        )
 
         print("\nAll Tables Loaded Successfully.")
 
+        print("Audit File Created : output/load_audit.csv") 
+          
 if __name__ == "__main__":
 
     DatabaseLoader().create_database()
