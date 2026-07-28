@@ -1,8 +1,7 @@
-from src.etl.loader import load_all_data
-from src.etl.validator import DataValidator
+from src.etl.database_loader import DatabaseLoader
 
-datasets = load_all_data()
+db = DatabaseLoader()
 
-validator = DataValidator()
+db.create_database()
 
-validator.validate(datasets)
+db.load_data()
