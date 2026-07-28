@@ -1,56 +1,45 @@
-from src.analytics.cagr import CAGRCalculator
 from src.utils.database import get_table
-from src.analytics.ratios import calculate_ratios
+from src.analytics.cashflow_kpis import CashflowKPI
 
 pl = get_table("profitandloss")
-bs = get_table("balancesheet")
+cf = get_table("cashflow")
 
-merged = calculate_ratios(pl, bs)
-
-print()
-
-print("Revenue CAGR")
-
-print(
-    CAGRCalculator.calculate(
-        100,
-        180,
-        5
-    )
+merged = pl.merge(
+    cf,
+    on=["company_id", "year"]
 )
 
-print()
-
-print("PAT CAGR")
-
-print(
-    CAGRCalculator.calculate(
-        50,
-        120,
-        5
-    )
+merged["free_cash_flow_cr"] = merged.apply(
+    lambda x: CashflowKPI.free_cash_flow(
+        x["operating_activity"],
+        x["investing_activity"]
+    ),
+    axis=1
 )
 
-print()
-
-print("Zero Base")
-
-print(
-    CAGRCalculator.calculate(
-        0,
-        120,
-        5
-    )
+merged["capex_cr"] = merged.apply(
+    lambda x: CashflowKPI.capex_intensity(
+        x["investing_activity"],
+        x["sales"]
+    ),
+    axis=1
 )
-print()
+
+merged["cash_from_operations_cr"] = merged["operating_activity"]
 
 print(
     merged[
         [
             "company_id",
             "year",
-            "sales",
-            "revenue_cagr_5yr"
+            "free_cash_flow_cr",
+            "capex_cr",
+            "cash_from_operations_cr"
         ]
     ].head(20)
 )
+from src.etl.database_loader import DatabaseLoader
+print(merged.columns.tolist())
+loader = DatabaseLoader()
+
+loader.save_financial_ratios(merged)
