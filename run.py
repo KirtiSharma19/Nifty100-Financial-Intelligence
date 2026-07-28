@@ -1,7 +1,15 @@
-from src.dashboard.company_dashboard import CompanyDashboard
+from src.services.ratio_engine import DatasetBuilder
 
-dashboard = CompanyDashboard()
+engine = DatasetBuilder()
 
-print()
+merged = engine.build_dataset()
 
-print(dashboard.top_quality_companies())
+print(
+    merged[
+        [
+            "company_name",
+            "broad_sector",
+            "quality_score"
+        ]
+    ].head(20)
+)

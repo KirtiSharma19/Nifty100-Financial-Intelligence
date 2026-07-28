@@ -1,21 +1,72 @@
-from src.utils.database import get_table
-from src.analytics.ratios import calculate_all_ratios
 from pathlib import Path
+
+from src.utils.database import get_table
+from src.analytics.ratios import (
+    calculate_all_ratios,
+    RatioEngine,
+)
+from src.analytics.cashflow_kpis import CashflowKPI
 from src.analytics.company_score import CompanyScore
 
 
-class RatioEngine:
+class DatasetBuilder:
 
     def build_dataset(self):
 
+        # Load Tables
         pl = get_table("profitandloss")
         bs = get_table("balancesheet")
         cf = get_table("cashflow")
+        companies = get_table("companies")
+        sectors = get_table("sectors")
 
-        from src.analytics.ratios import RatioEngine
-        from src.analytics.cashflow_kpis import CashflowKPI
+        # Merge Financial Statements
+        merged = calculate_all_ratios(
+            pl,
+            bs,
+            cf
+        )
 
-        merged = calculate_all_ratios(pl, bs, cf)
+        # -----------------------------
+        # Company Name
+        # -----------------------------
+        company_data = companies[
+            [
+                "id",
+                "company_name"
+            ]
+        ].rename(
+            columns={
+                "id": "company_id"
+            }
+        )
+
+        merged = merged.merge(
+            company_data,
+            on="company_id",
+            how="left"
+        )
+
+        # -----------------------------
+        # Sector Info
+        # -----------------------------
+        sector_data = sectors[
+            [
+                "company_id",
+                "broad_sector",
+                "sub_sector"
+            ]
+        ]
+
+        merged = merged.merge(
+            sector_data,
+            on="company_id",
+            how="left"
+        )
+
+        # -----------------------------
+        # Ratios
+        # -----------------------------
 
         merged["net_profit_margin_pct"] = merged.apply(
             lambda x: RatioEngine.net_profit_margin(
@@ -41,6 +92,18 @@ class RatioEngine:
             axis=1
         )
 
+        merged["return_on_equity_pct"] = merged.apply(
+            lambda x: RatioEngine.return_on_equity(
+                x["net_profit"],
+                x["equity_capital"] + x["reserves"]
+            ),
+            axis=1
+        )
+
+        # -----------------------------
+        # Cashflow KPIs
+        # -----------------------------
+
         merged["free_cash_flow_cr"] = merged.apply(
             lambda x: CashflowKPI.free_cash_flow(
                 x["operating_activity"],
@@ -57,15 +120,14 @@ class RatioEngine:
             axis=1
         )
 
-        merged["return_on_equity_pct"] = merged.apply(
-            lambda x: (
-                (x["net_profit"] / (x["equity_capital"] + x["reserves"])) * 100
-                if (x["equity_capital"] + x["reserves"]) != 0
-                else None
-            ),
-            axis=1
+        merged["cash_from_operations_cr"] = (
+            merged["operating_activity"]
         )
-        
+
+        # -----------------------------
+        # Quality Score
+        # -----------------------------
+
         merged["quality_score"] = merged.apply(
             lambda x: CompanyScore.score(
                 x["return_on_equity_pct"],
@@ -75,7 +137,9 @@ class RatioEngine:
             axis=1
         )
 
-        merged["cash_from_operations_cr"] = merged["operating_activity"]
+        # -----------------------------
+        # Edge Case Log
+        # -----------------------------
 
         self.log_edge_cases(merged)
 
@@ -83,33 +147,45 @@ class RatioEngine:
 
     def log_edge_cases(self, merged):
 
-        companies = get_table("companies")
-        sectors = get_table("sectors")
+        financial_companies = {
+            "AXISBANK",
+            "BAJAJFINSV",
+            "BAJAJHLDNG",
+            "BAJFINANCE",
+            "BANKBARODA",
+            "CANBK",
+            "CHOLAFIN",
+            "HDFCBANK",
+            "HDFCLIFE",
+            "ICICIBANK",
+            "ICICIGI",
+            "ICICIPRULI",
+            "INDUSINDBK",
+            "IRFC",
+            "JIOFIN",
+            "KOTAKBANK",
+            "LICI",
+            "PFC",
+            "PNB",
+            "RECLTD",
+            "SBILIFE",
+            "SBIN",
+            "SHRIRAMFIN"
+        }
 
-        sector_df = companies.merge(
-            sectors,
-            left_on="id",
-            right_on="company_id",
-            how="inner"
+        log_file = Path(
+            "output/ratio_edge_cases.log"
         )
 
-        financial_companies = set(
-            sector_df.loc[
-                sector_df["broad_sector"] == "Financials",
-                "id_x"
-            ].astype(str).str.upper()
-        )
-
-        print("\nFinancial Companies Found:")
-        print(sorted(financial_companies))
-
-        log_file = Path("output/ratio_edge_cases.log")
-
-        with open(log_file, "w", encoding="utf-8") as file:
+        with open(
+            log_file,
+            "w",
+            encoding="utf-8"
+        ) as file:
 
             for _, row in merged.iterrows():
 
-                company = str(row["company_id"]).upper()
+                company = row["company_id"]
 
                 if company in financial_companies:
                     continue
@@ -120,9 +196,13 @@ class RatioEngine:
                     continue
 
                 if debt > 5:
+
                     file.write(
-                        f"{company} | {row['year']} | High Debt To Equity : {debt:.2f}\n"
+                        f"{company} | "
+                        f"{row['year']} | "
+                        f"High Debt To Equity : "
+                        f"{debt:.2f}\n"
                     )
 
-        print("\nEdge Case Log Generated.")
-        print(financial_companies)
+        print()
+        print("Edge Case Log Generated.")
