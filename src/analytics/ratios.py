@@ -191,4 +191,28 @@ def calculate_ratios(pl_df, bs_df):
         "asset_turnover"
     ] = None
 
+    from src.analytics.cagr import CAGRCalculator
+
+    merged = merged.sort_values(["company_id", "year"])
+
+    merged["revenue_cagr_5yr"] = None
+
+    for company in merged["company_id"].unique():
+
+        company_data = merged[merged["company_id"] == company]
+
+        if len(company_data) >= 5:
+
+            start_sales = company_data.iloc[0]["sales"]
+            end_sales = company_data.iloc[-1]["sales"]
+
+            merged.loc[
+                merged["company_id"] == company,
+                "revenue_cagr_5yr"
+            ] = CAGRCalculator.calculate(
+                start_sales,
+                end_sales,
+                5
+            )
     return merged
+
