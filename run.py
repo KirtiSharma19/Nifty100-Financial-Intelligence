@@ -1,15 +1,5 @@
-from src.utils.database import get_table
-
-ratios = get_table("financial_ratios")
+print("Nifty100 Financial Intelligence Platform")
 
 print()
 
-print(ratios.head())
-
-print()
-
-print("Rows :", len(ratios))
-
-print()
-
-print(ratios.columns.tolist())
+print("Sprint 2 Ratio Engine Ready")
