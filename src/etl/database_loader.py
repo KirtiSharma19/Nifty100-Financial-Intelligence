@@ -84,8 +84,39 @@ class DatabaseLoader:
 
         print("\nAll Tables Loaded Successfully.")
 
-        print("Audit File Created : output/load_audit.csv") 
-          
+        print("Audit File Created : output/load_audit.csv")
+
+    def save_financial_ratios(self, df):
+
+        connection = sqlite3.connect(self.database)
+
+        columns = [
+            "company_id",
+            "year",
+            "net_profit_margin_pct",
+            "operating_profit_margin_pct",
+            "return_on_equity_pct",
+            "debt_to_equity",
+            "interest_coverage",
+            "asset_turnover"
+        ]
+
+        connection.execute("DROP TABLE IF EXISTS financial_ratios")
+
+        df[columns].to_sql(
+        "financial_ratios",
+        connection,
+        index=False
+        )
+
+        connection.commit()
+        connection.close()
+
+        print()
+        print("=" * 60)
+        print("Financial Ratios Saved Successfully.")
+        print("=" * 60) 
+
 if __name__ == "__main__":
 
     DatabaseLoader().create_database()

@@ -108,14 +108,14 @@ def calculate_ratios(pl_df, bs_df):
     ] = None
 
     # Return On Equity
-    merged["roe_pct"] = (
+    merged["return_on_equity_pct"] = (
         merged["net_profit"] /
         (merged["equity_capital"] + merged["reserves"])
     ) * 100
 
     merged.loc[
         (merged["equity_capital"] + merged["reserves"]) <= 0,
-        "roe_pct"
+        "return_on_equity_pct"
     ] = None
 
     # Debt To Equity

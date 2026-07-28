@@ -1,23 +1,15 @@
 from src.utils.database import get_table
-from src.analytics.ratios import calculate_ratios
 
-pl = get_table("profitandloss")
-bs = get_table("balancesheet")
-
-merged = calculate_ratios(pl, bs)
+ratios = get_table("financial_ratios")
 
 print()
 
-print(
-    merged[
-        [
-            "company_id",
-            "year",
-            "roe_pct",
-            "roce_pct",
-            "roa_pct",
-            "interest_coverage",
-            "asset_turnover"
-        ]
-    ].head(10)
-)
+print(ratios.head())
+
+print()
+
+print("Rows :", len(ratios))
+
+print()
+
+print(ratios.columns.tolist())
