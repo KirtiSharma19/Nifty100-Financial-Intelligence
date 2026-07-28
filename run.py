@@ -1,24 +1,21 @@
-from src.utils.database import execute_query
+from src.utils.database import get_table
+from src.analytics.ratios import calculate_ratios
 
-rows = execute_query("PRAGMA foreign_key_check;")
+pl = get_table("profitandloss")
+bs = get_table("balancesheet")
 
-print("=" * 60)
+merged = calculate_ratios(pl, bs)
 
-print("FOREIGN KEY CHECK")
+print()
 
-print("=" * 60)
-
-if len(rows) == 0:
-
-    print("SUCCESS")
-    print("No Foreign Key Errors Found.")
-
-else:
-
-    print("FAILED")
-
-    for row in rows:
-
-        print(row)
-
-print("=" * 60)
+print(
+    merged[
+        [
+            "company_id",
+            "year",
+            "sales",
+            "net_profit",
+            "net_profit_margin_pct"
+        ]
+    ].head(10)
+)

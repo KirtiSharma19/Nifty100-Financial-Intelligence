@@ -1,5 +1,6 @@
 import sqlite3
 from src.utils.paths import DATABASE_FILE
+import pandas as pd
 
 
 def get_connection():
@@ -19,3 +20,16 @@ def execute_query(query):
     conn.close()
 
     return rows
+
+def get_table(table_name):
+
+    conn = get_connection()
+
+    df = pd.read_sql(
+        f"SELECT * FROM {table_name}",
+        conn
+    )
+
+    conn.close()
+
+    return df
