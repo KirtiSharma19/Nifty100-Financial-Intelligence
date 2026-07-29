@@ -1,0 +1,11 @@
+broad_sector,quality_score,net_profit_margin_pct,return_on_equity_pct,debt_to_equity
+Information Technology,88.31,16.08,27.21,0.07
+Consumer Staples,79.29,14.26,37.33,0.19
+Healthcare,68.19,14.59,16.13,0.38
+Industrials,66.26,14.06,855.01,0.65
+Consumer Discretionary,62.15,8.54,236.55,0.61
+Materials,61.69,9.34,17.45,0.6
+Energy,45.95,12.5,8.65,2.46
+Financials,45.6,36.25,34.09,8.08
+Communication Services,41.67,44.93,7.78,1.0
+Real Estate,38.57,14.72,8.36,1.69
