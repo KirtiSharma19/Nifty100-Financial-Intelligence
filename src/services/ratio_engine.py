@@ -1,12 +1,12 @@
 from pathlib import Path
-
+import pandas as pd
 from src.utils.database import get_table
 from src.analytics.ratios import (
     calculate_all_ratios,
     RatioEngine,
 )
-from src.analytics.cashflow_kpis import CashflowKPI
 from src.analytics.company_score import CompanyScore
+from src.analytics.composite_score import CompositeScore
 
 
 class DatasetBuilder:
@@ -19,6 +19,9 @@ class DatasetBuilder:
         cf = get_table("cashflow")
         companies = get_table("companies")
         sectors = get_table("sectors")
+        market = pd.read_excel(
+            "data/raw/market_cap.xlsx"
+        )
 
         # Merge Financial Statements
         merged = calculate_all_ratios(
@@ -65,6 +68,38 @@ class DatasetBuilder:
         )
 
         # -----------------------------
+        # Market Valuation
+        # -----------------------------
+
+        merged["year"] = (
+            merged["year"]
+            .astype(str)
+            .str.extract(r"(\d{4})")[0]
+            .astype(int)
+        )
+
+        market["year"] = market["year"].astype(int)
+
+        market = market[
+            [
+                "company_id",
+                "year",
+                "market_cap_crore",
+                "enterprise_value_crore",
+                "pe_ratio",
+                "pb_ratio",
+                "ev_ebitda",
+                "dividend_yield_pct"
+            ]
+        ]
+
+        merged = merged.merge(
+            market,
+            on=["company_id", "year"],
+            how="left"
+        )
+
+        # -----------------------------
         # Ratios
         # -----------------------------
 
@@ -104,21 +139,15 @@ class DatasetBuilder:
         # Cashflow KPIs
         # -----------------------------
 
-        merged["free_cash_flow_cr"] = merged.apply(
-            lambda x: CashflowKPI.free_cash_flow(
-                x["operating_activity"],
-                x["investing_activity"]
-            ),
-            axis=1
+        merged["free_cash_flow_cr"] = (
+            merged["operating_activity"]
+                + merged["investing_activity"]
         )
 
-        merged["capex_cr"] = merged.apply(
-            lambda x: CashflowKPI.capex_intensity(
-                x["investing_activity"],
-                x["sales"]
-            ),
-            axis=1
-        )
+        merged["capex_cr"] = (
+            merged["investing_activity"].abs()
+                / merged["sales"]
+        ) * 100
 
         merged["cash_from_operations_cr"] = (
             merged["operating_activity"]
@@ -133,6 +162,20 @@ class DatasetBuilder:
                 x["return_on_equity_pct"],
                 x["debt_to_equity"],
                 x["net_profit_margin_pct"]
+            ),
+            axis=1
+        )
+        # -----------------------------
+        # Composite Score
+        # -----------------------------
+
+        merged["composite_score"] = merged.apply(
+            lambda x: CompositeScore.calculate(
+                x["return_on_equity_pct"],
+                x["net_profit_margin_pct"],
+                x["free_cash_flow_cr"],
+                x["debt_to_equity"],
+                x["dividend_yield_pct"]
             ),
             axis=1
         )

@@ -1,59 +1,123 @@
-# Nifty100 Financial Intelligence
+# 📈 Nifty100 Financial Intelligence Dashboard
 
-## Overview
+A complete Financial Intelligence Dashboard built using Python, Pandas and Streamlit for analysing Nifty 100 companies.
 
-Financial analytics platform built using Python.
+---
 
-## Features
+# Features
 
-- ETL Pipeline
-- SQLite Database
-- Data Validation
-- Financial Ratio Engine
-- CAGR Calculation
-- Cashflow KPIs
-- Company Quality Score
 - Company Dashboard
-- KPI Dashboard
 - Sector Dashboard
-- Top Companies Chart
-- Sector Report
-- Financial Report Generator
+- KPI Dashboard
+- Top Companies Dashboard
+- Financial Ratio Analysis
+- Quality Score Calculation
+- CAGR Analysis
+- Cash Flow Analysis
+- Valuation Analysis
+- CSV Report Export
+- Interactive Charts
 
-## Project Structure
+---
 
-data/
-src/
-exports/
-db/
-tests/
-
-## Technologies
+# Tech Stack
 
 - Python
 - Pandas
-- SQLite
+- NumPy
+- Streamlit
 - Matplotlib
-- Pytest
+- SQLite
 
-## Outputs
+---
 
-- Financial Report CSV
-- Sector Report CSV
-- Quality Score Charts
+# Folder Structure
 
-## Run
+```
+src/
+    analytics/
+    dashboard/
+    services/
+    reports/
+    utils/
+    config/
 
-```bash
-python app.py
+exports/
+    charts/
+    reports/
+
+data/
+database/
 ```
 
-or
+---
+
+# Financial KPIs
+
+- Return on Equity
+- Net Profit Margin
+- Operating Profit Margin
+- Debt to Equity
+- Free Cash Flow
+- CAPEX
+- Market Capitalization
+- Enterprise Value
+- PE Ratio
+- PB Ratio
+- EV/EBITDA
+- Dividend Yield
+
+---
+
+# Dashboards
+
+## Home Dashboard
+
+Overall Financial Summary
+
+## Company Dashboard
+
+Company-wise Financial Analysis
+
+## Top Companies
+
+Top companies by Quality Score
+
+## Sector Dashboard
+
+Sector comparison
+
+## KPI Dashboard
+
+Overall Financial KPIs
+
+---
+
+# Generated Reports
+
+- final_financial_report.csv
+- sector_report.csv
+- valuation_report.csv
+- cashflow_report.csv
+- cagr_report.csv
+
+---
+
+# Charts
+
+- Sector Quality
+- Valuation
+- CAGR
+- Cash Flow
+- Top Quality Companies
+
+---
+
+# Run Project
 
 ```bash
-python -m src.dashboard.company_dashboard
+pip install -r requirements.txt
+
+streamlit run src/dashboard/app.py
 ```
-
-## Author
-
-Kirti Sharma
+---
