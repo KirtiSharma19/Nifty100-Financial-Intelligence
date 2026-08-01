@@ -41,9 +41,13 @@ src/
     reports/
     utils/
     config/
+    etl/
+    models/
+    screener/
 
 exports/
     charts/
+    radar_charts/
     reports/
 
 data/
@@ -73,23 +77,35 @@ database/
 
 ## Home Dashboard
 
-Overall Financial Summary
+Overall Financial Summary with key financial KPIs, sector overview and top-performing companies.
 
-## Company Dashboard
+## Company Profile Dashboard
 
-Company-wise Financial Analysis
+Detailed company profile with financial metrics, historical trends and performance analysis.
 
-## Top Companies
+## Financial Screener Dashboard
 
-Top companies by Quality Score
+Filter companies using financial ratios, quality score and sector-wise screening with CSV export.
 
-## Sector Dashboard
+## Peer Comparison Dashboard
 
-Sector comparison
+Compare a company with its industry peers using radar charts, KPI comparison tables and visual analytics.
 
-## KPI Dashboard
+## Trend Analysis Dashboard
 
-Overall Financial KPIs
+Analyze 10-year financial trends with interactive charts and multi-metric comparison.
+
+## Sector Analysis Dashboard
+
+Compare sectors using bubble charts, sector KPIs and performance distribution.
+
+## Capital Allocation Dashboard
+
+Visualize capital allocation patterns across companies with treemap and allocation insights.
+
+## Reports Dashboard
+
+Generate and download financial reports, valuation reports and annual report links.
 
 ---
 
@@ -100,6 +116,11 @@ Overall Financial KPIs
 - valuation_report.csv
 - cashflow_report.csv
 - cagr_report.csv
+- valuation_report.csv
+- financial_report.csv
+- peer_comparison.csv
+- peer_comparison.xlsx
+- screener_output.csv
 
 ---
 

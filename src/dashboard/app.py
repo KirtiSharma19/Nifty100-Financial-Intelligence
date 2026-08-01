@@ -1,6 +1,5 @@
 import os
 import sys
-import pandas as pd
 
 PROJECT_ROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "..")
@@ -10,135 +9,91 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 import streamlit as st
-from src.dashboard.top_companies import show_top_companies
-from src.dashboard.company_dashboard import show_company_dashboard
-from src.services.ratio_engine import DatasetBuilder
-import plotly.express as px
-from src.dashboard.sector_dashboard import show_sector_dashboard
-from src.dashboard.kpi_dashboard import show_kpi_dashboard
+
+from src.dashboard.dashboard_pages._01_home import show as home_page
+from src.dashboard.dashboard_pages._02_profile import show as profile_page
+from src.dashboard.dashboard_pages._03_screener import show as screener_page
+from src.dashboard.dashboard_pages._04_peers import show as peers_page
+from src.dashboard.dashboard_pages._05_trends import show as trends_page
+from src.dashboard.dashboard_pages._06_sectors import show as sectors_page
+from src.dashboard.dashboard_pages._07_capital import show as capital_page
+from src.dashboard.dashboard_pages._08_reports import show as reports_page
+
+# -------------------------------------------------
+# Page Config
+# -------------------------------------------------
 
 st.set_page_config(
     page_title="Nifty100 Financial Intelligence",
+    page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-st.title("Nifty100 Financial Intelligence")
+# -------------------------------------------------
+# Sidebar
+# -------------------------------------------------
 
 st.sidebar.title("Navigation")
 
 page = st.sidebar.radio(
-    "Go To",
+
+    "Select Screen",
+
     [
+
         "Home",
-        "Company Dashboard",
-        "Top Companies",
-        "Sector Dashboard",
-        "KPI Dashboard"
+
+        "Company Profile",
+
+        "Financial Screener",
+
+        "Peer Comparison",
+
+        "Trend Analysis",
+
+        "Sector Analysis",
+
+        "Capital Allocation",
+
+        "Reports"
+
     ]
+
 )
+
+# -------------------------------------------------
+# Routing
+# -------------------------------------------------
 
 if page == "Home":
 
-    engine = DatasetBuilder()
-    df = engine.build_dataset()
+    home_page()
 
-    df["year_dt"] = pd.to_datetime(df["year"], errors="coerce")
+elif page == "Company Profile":
 
-    latest = (
-        df
-        .sort_values("year_dt")
-        .groupby("company_name", as_index=False)
-        .tail(1)
-    )
+    profile_page()
 
-    st.header("📊 Dashboard Summary")
+elif page == "Financial Screener":
 
-    col1, col2, col3 = st.columns(3)
+    screener_page()
 
-    col1.metric(
-        "Companies",
-        latest["company_name"].nunique()
-    )
+elif page == "Peer Comparison":
 
-    col2.metric(
-        "Average Quality",
-        round(latest["quality_score"].mean(), 2)
-    )
+    peers_page()
 
-    col3.metric(
-        "Average ROE",
-        round(latest["return_on_equity_pct"].mean(), 2)
-    )
+elif page == "Trend Analysis":
 
-    col4, col5, col6 = st.columns(3)
+    trends_page()
 
-    col4.metric(
-        "Average Margin",
-        round(latest["net_profit_margin_pct"].mean(), 2)
-    )
+elif page == "Sector Analysis":
 
-    col5.metric(
-        "Average Debt/Equity",
-        round(latest["debt_to_equity"].mean(), 2)
-    )
+    sectors_page()
 
-    col6.metric(
-        "Sectors",
-        latest["broad_sector"].nunique()
-    )
+elif page == "Capital Allocation":
 
-    sector = (
-        latest
-        .groupby("broad_sector")
-        .size()
-        .reset_index(name="Companies")
-    )
+    capital_page()
 
-    fig = px.pie(
-        sector,
-        names="broad_sector",
-        values="Companies",
-        title="Sector Distribution"
-    )
+elif page == "Reports":
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
-    st.subheader("🏆 Top 5 Companies")
-
-    top5 = latest.sort_values(
-        "quality_score",
-        ascending=False
-    ).head(5)
-
-    st.dataframe(
-        top5[
-        [
-            "company_name",
-            "broad_sector",
-            "quality_score",
-            "return_on_equity_pct",
-        ]
-        ],
-        use_container_width=True
-    )
-    st.write("Total Rows :", len(df))
-    st.write("Unique Companies :", df["company_name"].nunique())
-    st.write("Latest Year :", latest)
-    st.write("Rows in Latest :", len(latest))
-    st.write(latest.head())
-
-elif page == "Company Dashboard":
-    show_company_dashboard()
-
-elif page == "Top Companies":
-    show_top_companies()
-
-elif page == "Sector Dashboard":
-    show_sector_dashboard()
-
-elif page == "KPI Dashboard":
-    show_kpi_dashboard()
+    reports_page()
