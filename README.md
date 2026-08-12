@@ -196,12 +196,9 @@ Generate and access financial reports including:
 
 The project also provides a **FastAPI REST API** for accessing financial intelligence programmatically.
 
-### API Base URL
+---
 
-```text
-/api/v1
-
-## 🔗 Quick Links
+### Quick Links
 
 | Resource | Link |
 |---|---|
@@ -287,7 +284,7 @@ The project also provides a **FastAPI REST API** for accessing financial intelli
                                  ▼
                     ┌─────────────────────────┐
                     │ Quality / Composite     │
-                    │        Scoring           │
+                    │        Scoring          │
                     └────────────┬────────────┘
                                  │
              ┌───────────────────┼───────────────────┐
@@ -373,13 +370,13 @@ NIFTY100-Financial-Intelligence/
 ├── pytest.ini
 └── README.md
 
---- Run Dashboard
+### Run Dashboard
 streamlit run src/dashboard/app.py
 The dashboard will normally open at:
 
 http://localhost:8501
 
-⚡ Quick Start
+### Quick Start
 For Windows:
 
 git clone <YOUR-GITHUB-REPOSITORY-URL>
@@ -404,3 +401,4 @@ uvicorn src.api.main:app --reload
 Then open:
 
 http://127.0.0.1:8000/docs
+
