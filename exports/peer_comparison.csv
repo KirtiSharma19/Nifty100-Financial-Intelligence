@@ -1,28 +1,22 @@
 company_name,peer_group,return_on_equity_pct_percentile,net_profit_margin_pct_percentile,debt_to_equity_percentile,free_cash_flow_cr_percentile,composite_score_percentile
 Abbott India Ltd,,,,,,
-Abbott India Ltd,,,,,,
 Adani Energy Solutions Ltd,,,,,,
 Adani Enterprises Ltd,,,,,,
-Adani Green Energy Ltd,Power & Utilities,37.5,37.5,12.5,12.5,12.5
+Adani Green Energy Ltd,Power & Utilities,42.857142857142854,42.857142857142854,14.285714285714285,14.285714285714285,14.285714285714285
 "Adani Ports & Special Economic Zone Ltd
 ",,,,,,
-"Adani Ports & Special Economic Zone Ltd
-",,,,,,
-Adani Power Ltd,Power & Utilities,100.0,87.5,100.0,75.0,100.0
+Adani Power Ltd,Power & Utilities,100.0,85.71428571428571,100.0,85.71428571428571,100.0
 Ambuja Cements Ltd,,,,,,
 "Apollo Hospitals
 Chain of Indian private hospitals",,,,,,
 "Asian Paints
 Indian Multi-National Paint and Coating Manufacturing Company",,,,,,
-"Asian Paints
-Indian Multi-National Paint and Coating Manufacturing Company",,,,,,
-Bajaj Auto Ltd,Automobiles,81.25,81.25,56.25,81.25,81.25
-Bajaj Auto Ltd,Automobiles,81.25,81.25,56.25,81.25,81.25
+Bajaj Auto Ltd,Automobiles,85.71428571428571,85.71428571428571,57.14285714285714,85.71428571428571,85.71428571428571
 Axis Bank Ltd,Private Banks,80.0,40.0,20.0,40.0,40.0
 Bajaj Finserv Ltd,,,,,,
 Bajaj Holdings & Investment Ltd,,,,,,
 Bajaj Finance Ltd,Consumer Finance,100.0,100.0,100.0,33.33333333333333,33.33333333333333
-Bank of Baroda,Public Sector Banks,14.285714285714285,100.0,28.57142857142857,85.71428571428571,85.71428571428571
+Bank of Baroda,Public Sector Banks,33.33333333333333,100.0,66.66666666666666,66.66666666666666,66.66666666666666
 Bharti Airtel Ltd,,,,,,
 Bharat Electronics Ltd,,,,,,
 "Bharat Heavy Electricals Limited
@@ -30,7 +24,7 @@ Bharat Electronics Ltd,,,,,,
 Bosch Ltd,,,,,,
 Bharat Petroleum Corporation Ltd,Oil & Gas,100.0,40.0,40.0,40.0,80.0
 Britannia Industries Ltd,FMCG,85.71428571428571,42.857142857142854,14.285714285714285,71.42857142857143,42.857142857142854
-Canara Bank,Public Sector Banks,28.57142857142857,85.71428571428571,14.285714285714285,100.0,100.0
+Canara Bank,Public Sector Banks,66.66666666666666,66.66666666666666,33.33333333333333,100.0,100.0
 Cholamandalam Investment & Finance Company Ltd,Consumer Finance,66.66666666666666,33.33333333333333,33.33333333333333,66.66666666666666,83.33333333333334
 "Cipla Ltd
 ",Pharmaceuticals,60.0,40.0,80.0,60.0,30.0
@@ -40,17 +34,17 @@ Divis Laboratories Ltd,Pharmaceuticals,20.0,100.0,100.0,40.0,70.0
 DLF Ltd,,,,,,
 Avenue Supermarts Ltd,,,,,,
 Dr Reddys Laboratories Ltd,Pharmaceuticals,80.0,80.0,40.0,20.0,30.0
-Eicher Motors Ltd,Automobiles,50.0,100.0,87.5,37.5,100.0
+Eicher Motors Ltd,Automobiles,57.14285714285714,100.0,85.71428571428571,42.857142857142854,100.0
 GAIL (India) Ltd,Oil & Gas,40.0,60.0,100.0,20.0,40.0
 Godrej Consumer Products Ltd,FMCG,14.285714285714285,14.285714285714285,28.57142857142857,14.285714285714285,14.285714285714285
 Grasim Industries Ltd,,,,,,
 Hindustan Aeronautics Ltd,,,,,,
 Havells India Ltd,,,,,,
-HCL Technologies Ltd,IT Services,66.66666666666666,66.66666666666666,100.0,66.66666666666666,58.333333333333336
+HCL Technologies Ltd,IT Services,60.0,60.0,100.0,60.0,50.0
 HDFC Bank Ltd,Private Banks,60.0,60.0,60.0,100.0,80.0
 HDFC Life Insurance Company Ltd,Life Insurance,50.0,75.0,50.0,25.0,62.5
 "Hero MotoCorp Ltd
-",Automobiles,37.5,62.5,75.0,50.0,62.5
+",Automobiles,42.857142857142854,71.42857142857143,71.42857142857143,57.14285714285714,71.42857142857143
 Hindalco Industries Ltd,Steel,50.0,50.0,75.0,100.0,25.0
 "Hindustan Unilever Ltd
 ",FMCG,57.14285714285714,85.71428571428571,85.71428571428571,85.71428571428571,78.57142857142857
@@ -58,7 +52,7 @@ ICICI Bank Ltd,Private Banks,100.0,80.0,80.0,80.0,100.0
 ICICI Lombard General Insurance Company Ltd,,,,,,
 ICICI Prudential Life Insurance Company Ltd,Life Insurance,25.0,25.0,25.0,75.0,62.5
 IndusInd Bank Ltd,Private Banks,40.0,20.0,40.0,20.0,20.0
-Infosys Ltd,IT Services,83.33333333333334,83.33333333333334,66.66666666666666,83.33333333333334,91.66666666666666
+Infosys Ltd,IT Services,80.0,80.0,60.0,80.0,90.0
 "Indian Oil Corporation
 ",Oil & Gas,80.0,20.0,20.0,60.0,80.0
 Indian Railway Catering & Tourism Corporation Ltd,,,,,,
@@ -67,33 +61,28 @@ Indian Railway Finance Corporation Ltd,,,,,,
 ",FMCG,71.42857142857143,100.0,100.0,100.0,100.0
 Jindal Steel & Power Ltd,Steel,100.0,100.0,100.0,50.0,100.0
 Jio Financial Services Ltd,,,,,,
-JSW Energy Ltd,Power & Utilities,12.5,50.0,37.5,25.0,25.0
+JSW Energy Ltd,Power & Utilities,14.285714285714285,57.14285714285714,42.857142857142854,28.57142857142857,28.57142857142857
 JSW Steel Ltd,Steel,75.0,75.0,25.0,25.0,62.5
 "Kotak Mahindra Bank Ltd
 ",Private Banks,20.0,100.0,100.0,60.0,60.0
 Life Insurance Corporation of India,Life Insurance,100.0,100.0,87.5,100.0,100.0
 Macrotech Developers Ltd,,,,,,
 Larsen & Toubro Ltd,,,,,,
-LTIMindtree Ltd,IT Services,50.0,50.0,16.666666666666664,16.666666666666664,91.66666666666666
+LTIMindtree Ltd,IT Services,40.0,40.0,20.0,20.0,90.0
 "Mahindra & Mahindra Ltd
-",Automobiles,25.0,37.5,25.0,12.5,25.0
-Maruti Suzuki India Ltd,Automobiles,12.5,50.0,100.0,62.5,43.75
+",Automobiles,28.57142857142857,42.857142857142854,28.57142857142857,14.285714285714285,28.57142857142857
+Maruti Suzuki India Ltd,Automobiles,14.285714285714285,57.14285714285714,100.0,71.42857142857143,50.0
 Samvardhana Motherson International Ltd,,,,,,
 Info Edge (India) Ltd,,,,,,
 Nestle India Ltd,FMCG,100.0,71.42857142857143,71.42857142857143,57.14285714285714,78.57142857142857
 "NHPC Ltd
-",Power & Utilities,25.0,100.0,87.5,37.5,62.5
-NTPC Ltd,Power & Utilities,62.5,25.0,50.0,62.5,50.0
+",Power & Utilities,28.57142857142857,100.0,85.71428571428571,42.857142857142854,71.42857142857143
+NTPC Ltd,Power & Utilities,71.42857142857143,28.57142857142857,57.14285714285714,71.42857142857143,57.14285714285714
 Oil & Natural Gas Corpn Ltd,Oil & Gas,60.0,100.0,80.0,80.0,80.0
 Power Finance Corporation Ltd,,,,,,
 Pidilite Industries Ltd,,,,,,
-Punjab National Bank,Public Sector Banks,71.42857142857143,42.857142857142854,71.42857142857143,42.857142857142854,42.857142857142854
-Punjab National Bank,Public Sector Banks,71.42857142857143,42.857142857142854,71.42857142857143,42.857142857142854,42.857142857142854
-Punjab National Bank,Public Sector Banks,71.42857142857143,42.857142857142854,71.42857142857143,42.857142857142854,42.857142857142854
-Punjab National Bank,Public Sector Banks,71.42857142857143,42.857142857142854,71.42857142857143,42.857142857142854,42.857142857142854
-Punjab National Bank,Public Sector Banks,71.42857142857143,42.857142857142854,71.42857142857143,42.857142857142854,42.857142857142854
-Power Grid Corporation of India Ltd,Power & Utilities,81.25,68.75,68.75,93.75,81.25
-Power Grid Corporation of India Ltd,Power & Utilities,81.25,68.75,68.75,93.75,81.25
+Punjab National Bank,Public Sector Banks,100.0,33.33333333333333,100.0,33.33333333333333,33.33333333333333
+Power Grid Corporation of India Ltd,Power & Utilities,85.71428571428571,71.42857142857143,71.42857142857143,100.0,85.71428571428571
 REC Ltd,,,,,,
 "Reliance Industries Ltd
 ",Oil & Gas,20.0,80.0,60.0,100.0,20.0
@@ -104,19 +93,18 @@ Shree Cement Ltd,,,,,,
 Siemens Ltd,,,,,,
 Sun Pharmaceuticals Industries Ltd,Pharmaceuticals,40.0,60.0,60.0,100.0,100.0
 Tata Consumer Products Ltd,FMCG,28.57142857142857,28.57142857142857,42.857142857142854,28.57142857142857,28.57142857142857
-Tata Motors Ltd,Automobiles,100.0,25.0,37.5,100.0,43.75
+Tata Motors Ltd,Automobiles,100.0,28.57142857142857,42.857142857142854,100.0,50.0
 "Tata Power Company Ltd
-",Power & Utilities,50.0,12.5,25.0,50.0,37.5
+",Power & Utilities,57.14285714285714,14.285714285714285,28.57142857142857,57.14285714285714,42.857142857142854
 "Tata Steel Ltd
 ",Steel,25.0,25.0,50.0,75.0,62.5
-Tata Consultancy Services Ltd,IT Services,100.0,100.0,83.33333333333334,100.0,58.333333333333336
-Tech Mahindra Ltd,IT Services,25.0,25.0,41.66666666666667,41.66666666666667,25.0
-Tech Mahindra Ltd,IT Services,25.0,25.0,41.66666666666667,41.66666666666667,25.0
+Tata Consultancy Services Ltd,IT Services,100.0,100.0,80.0,100.0,50.0
+Tech Mahindra Ltd,IT Services,20.0,20.0,40.0,40.0,20.0
 "Titan Company Ltd
 ",,,,,,
 Torrent Pharmaceuticals Ltd,Pharmaceuticals,100.0,20.0,20.0,80.0,70.0
 Trent Ltd,,,,,,
-TVS Motor Company Ltd,Automobiles,62.5,12.5,12.5,25.0,12.5
+TVS Motor Company Ltd,Automobiles,71.42857142857143,14.285714285714285,14.285714285714285,28.57142857142857,14.285714285714285
 ,,,,,,
 ,,,,,,
 Interglobe Aviation Ltd,,,,,,

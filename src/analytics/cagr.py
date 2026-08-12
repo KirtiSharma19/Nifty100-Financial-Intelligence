@@ -1,108 +1,64 @@
-import pandas as pd
+"""
+CAGR Calculator
 
-from src.services.ratio_engine import DatasetBuilder
+Provides reusable CAGR calculation logic for
+financial analysis.
+"""
 
-engine = DatasetBuilder()
 
-df = engine.build_dataset()
+class CAGRCalculator:
+    """
+    Calculate Compound Annual Growth Rate (CAGR).
+    """
 
-# -----------------------------
-# Convert Year
-# -----------------------------
+    @staticmethod
+    def calculate(start_value, end_value, years):
+        """
+        Calculate CAGR.
 
-df["year"] = (
-    df["year"]
-    .astype(str)
-    .str.extract(r"(\d{4})")[0]
-    .astype(int)
-)
+        Formula:
+            CAGR = ((End Value / Start Value) ** (1 / Years) - 1) * 100
 
-# -----------------------------
-# Sales CAGR
-# -----------------------------
+        Parameters
+        ----------
+        start_value : float
+            Starting value.
 
-records = []
+        end_value : float
+            Ending value.
 
-for company in df["company_name"].dropna().unique():
+        years : int or float
+            Number of years.
 
-    company_df = (
-        df[df["company_name"] == company]
-        .sort_values("year")
-    )
+        Returns
+        -------
+        float or None
+            CAGR percentage rounded to 2 decimals.
+        """
 
-    if len(company_df) < 2:
-        continue
+        # Invalid values
+        if start_value is None or end_value is None:
+            return None
 
-    first = company_df.iloc[0]
-    last = company_df.iloc[-1]
+        if years is None:
+            return None
 
-    start_sales = first["sales"]
-    end_sales = last["sales"]
+        # Years must be positive
+        if years <= 0:
+            return None
 
-    years = last["year"] - first["year"]
+        # Starting value must be positive
+        # because CAGR calculation cannot use zero
+        # or negative starting values.
+        if start_value <= 0:
+            return None
 
-    if years <= 0:
-        continue
+        try:
+            cagr = (
+                (end_value / start_value) ** (1 / years) - 1
+            ) * 100
 
-    if start_sales <= 0:
-        continue
+            return round(cagr, 2)
 
-    cagr = (
-        ((end_sales / start_sales) ** (1 / years)) - 1
-    ) * 100
-
-    records.append(
-        {
-            "company_name": company,
-            "start_year": first["year"],
-            "end_year": last["year"],
-            "sales_cagr": round(cagr, 2)
-        }
-    )
-
-cagr_df = pd.DataFrame(records)
-
-cagr_df = cagr_df.sort_values(
-    "sales_cagr",
-    ascending=False
-)
-
-print()
-print("=" * 70)
-print("TOP SALES CAGR COMPANIES")
-print("=" * 70)
-
-print(cagr_df.head(10))
-
-cagr_df.to_csv(
-    "exports/cagr_report.csv",
-    index=False
-)
-
-print()
-print("CAGR Report Saved")
-
-import matplotlib.pyplot as plt
-
-top = cagr_df.head(10)
-
-plt.figure(figsize=(12,6))
-
-plt.bar(
-    top["company_name"],
-    top["sales_cagr"]
-)
-
-plt.xticks(rotation=45, ha="right")
-
-plt.ylabel("Sales CAGR (%)")
-
-plt.title("Top 10 Sales CAGR Companies")
-
-plt.tight_layout()
-
-plt.savefig(
-    "exports/charts/cagr_chart.png"
-)
-
-plt.show()
+        except (TypeError, ValueError, ZeroDivisionError):
+            return None

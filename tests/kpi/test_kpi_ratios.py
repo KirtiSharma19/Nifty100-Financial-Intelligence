@@ -1,4 +1,8 @@
-from src.analytics.ratios import RatioEngine
+from src.analytics.ratios import (
+    RatioEngine,
+    calculate_ratios,
+    calculate_all_ratios,
+)
 
 
 def test_net_profit_margin():

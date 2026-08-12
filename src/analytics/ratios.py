@@ -3,7 +3,7 @@ Financial Ratio Engine
 """
 
 import pandas as pd
-
+from src.analytics.cagr import CAGRCalculator
 
 class RatioEngine:
 
@@ -133,7 +133,6 @@ def calculate_ratios(pl_df, bs_df):
         merged["borrowings"] == 0,
         "debt_to_equity"
     ] = 0 
-
     # Return On Capital Employed (ROCE)
     capital_employed = (
         merged["equity_capital"] +
@@ -190,8 +189,6 @@ def calculate_ratios(pl_df, bs_df):
         merged["total_assets"] <= 0,
         "asset_turnover"
     ] = None
-
-    from src.analytics.cagr import CAGRCalculator
 
     merged = merged.sort_values(["company_id", "year"])
 
