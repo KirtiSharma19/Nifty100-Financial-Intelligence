@@ -1,18 +1,19 @@
-import time
 import logging
 import math
-from fastapi.responses import JSONResponse
+import time
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from src.utils.database import get_connection
 from src.api.routers.companies import router as companies_router
+from src.api.routers.documents import router as documents_router
+from src.api.routers.peers import router as peers_router
+from src.api.routers.portfolio import router as portfolio_router
 from src.api.routers.screener import router as screener_router
 from src.api.routers.sectors import router as sectors_router
-from src.api.routers.peers import router as peers_router
 from src.api.routers.valuation import router as valuation_router
-from src.api.routers.portfolio import router as portfolio_router
-from src.api.routers.documents import router as documents_router
+from src.utils.database import get_connection
 
 # --------------------------------------------------
 # Application start time
@@ -40,10 +41,7 @@ class SafeJSONResponse(JSONResponse):
     def render(self, content) -> bytes:
         def sanitize(value):
             if isinstance(value, dict):
-                return {
-                    key: sanitize(val)
-                    for key, val in value.items()
-                }
+                return {key: sanitize(val) for key, val in value.items()}
 
             if isinstance(value, list):
                 return [sanitize(item) for item in value]
@@ -55,7 +53,8 @@ class SafeJSONResponse(JSONResponse):
             return value
 
         return super().render(sanitize(content))
-    
+
+
 app = FastAPI(
     title="NIFTY100 Financial Intelligence API",
     version="1.0.0",
@@ -73,38 +72,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(
-    companies_router,
-    prefix="/api/v1"
-)
-app.include_router(
-    screener_router,
-    prefix="/api/v1"
-)
-app.include_router(
-    sectors_router,
-    prefix="/api/v1"
-)
-app.include_router(
-    peers_router,
-    prefix="/api/v1"
-)
-app.include_router(
-    valuation_router,
-    prefix="/api/v1"
-)
-app.include_router(
-    portfolio_router,
-    prefix="/api/v1"
-)
-app.include_router(
-    documents_router,
-    prefix="/api/v1"
-)
+app.include_router(companies_router, prefix="/api/v1")
+app.include_router(screener_router, prefix="/api/v1")
+app.include_router(sectors_router, prefix="/api/v1")
+app.include_router(peers_router, prefix="/api/v1")
+app.include_router(valuation_router, prefix="/api/v1")
+app.include_router(portfolio_router, prefix="/api/v1")
+app.include_router(documents_router, prefix="/api/v1")
 
 # --------------------------------------------------
 # Request Logging Middleware
 # --------------------------------------------------
+
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -129,6 +108,7 @@ async def log_requests(request: Request, call_next):
 # Health Endpoint
 # --------------------------------------------------
 
+
 @app.get("/api/v1/health")
 def health():
     """
@@ -142,15 +122,13 @@ def health():
         cursor = conn.cursor()
 
         # Get all user-created tables
-        cursor.execute(
-            """
+        cursor.execute("""
             SELECT name
             FROM sqlite_master
             WHERE type = 'table'
               AND name NOT LIKE 'sqlite_%'
             ORDER BY name
-            """
-        )
+            """)
 
         tables = [row[0] for row in cursor.fetchall()]
 
@@ -160,9 +138,7 @@ def health():
         for table in tables:
             safe_table_name = table.replace('"', '""')
 
-            cursor.execute(
-                f'SELECT COUNT(*) FROM "{safe_table_name}"'
-            )
+            cursor.execute(f'SELECT COUNT(*) FROM "{safe_table_name}"')
 
             db_row_counts[table] = cursor.fetchone()[0]
 

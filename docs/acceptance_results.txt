@@ -1,0 +1,27 @@
+SPRINT 6 ACCEPTANCE GATES
+======================================================================
+
+AC-01: FAIL - Company count = 92 | SQLite database not found
+AC-02: FAIL - Financial history tables exist | Database not found
+AC-03: FAIL - Foreign key check returns 0 rows | Database not found
+AC-04: FAIL - Financial ratios >= 1100 | Database not found
+AC-05: PASS - Revenue CAGR validation available | Required financial output found
+AC-06: PASS - ROE validation output available | Financial ratios output found
+AC-07: PASS - Quality screener output exists | Output directory available
+AC-08: PASS - Performance notes exist | output\perf_notes.md
+AC-09: PASS - Screener CSV/output available | CSV files found
+AC-10: PASS - Tearsheet PDFs available | 92 PDF files found
+AC-11: FAIL - Health API implementation exists | Health router/source checked
+AC-12: PASS - Company historical ratios available | Ratio implementation found
+AC-13: PASS - API screener implementation exists | Screener router found
+AC-14: PASS - Peer percentile implementation exists | Peer implementation found
+AC-15: PASS - All 92 companies have cluster IDs | 92 rows
+AC-16: PASS - Pros/cons output exists | 1 matching files
+AC-17: FAIL - Tearsheet PDFs >= 30 KB | 0 PDFs >= 30 KB
+AC-18: FAIL - Pytest HTML report exists | pytest report checked
+AC-19: PASS - validation_failures.csv exists | Validation report checked
+AC-20: PASS - Analyst guide exists and is >= 10 pages | 16334 bytes
+
+======================================================================
+PASS: 13
+FAIL: 7

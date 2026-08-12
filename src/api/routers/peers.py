@@ -1,9 +1,7 @@
-from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
 
 from src.services.ratio_engine import DatasetBuilder
-
 
 router = APIRouter(
     prefix="/peers",
@@ -19,26 +17,14 @@ def get_latest_data():
 
     df = DatasetBuilder().build_dataset()
 
-    df["year"] = (
-        df["year"]
-        .astype(str)
-        .str.extract(r"(\d{4})")[0]
-        .astype(int)
-    )
+    df["year"] = df["year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
 
     latest_year = df["year"].max()
 
-    latest = df[
-        df["year"] == latest_year
-    ].copy()
+    latest = df[df["year"] == latest_year].copy()
 
-    latest = (
-        latest
-        .drop_duplicates(
-            subset=["company_id"],
-            keep="first"
-        )
-        .reset_index(drop=True)
+    latest = latest.drop_duplicates(subset=["company_id"], keep="first").reset_index(
+        drop=True
     )
 
     return latest
@@ -65,14 +51,8 @@ def clean_value(value):
 @router.get("/{ticker}")
 def get_peers(
     ticker: str,
-    limit: int = Query(
-        default=10,
-        ge=1,
-        le=50
-    ),
-    sort_by: str = Query(
-        default="quality_score"
-    ),
+    limit: int = Query(default=10, ge=1, le=50),
+    sort_by: str = Query(default="quality_score"),
 ):
     """
     Return companies from the same broad sector
@@ -85,18 +65,10 @@ def get_peers(
     # Find target company
     # --------------------------------------------------
 
-    target = df[
-        df["company_id"]
-        .astype(str)
-        .str.upper()
-        == ticker.upper()
-    ]
+    target = df[df["company_id"].astype(str).str.upper() == ticker.upper()]
 
     if target.empty:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Company '{ticker}' not found"
-        )
+        raise HTTPException(status_code=404, detail=f"Company '{ticker}' not found")
 
     target_row = target.iloc[0]
 
@@ -107,19 +79,11 @@ def get_peers(
     # --------------------------------------------------
 
     peers = df[
-        df["broad_sector"]
-        .astype(str)
-        .str.lower()
-        == str(target_sector).lower()
+        df["broad_sector"].astype(str).str.lower() == str(target_sector).lower()
     ].copy()
 
     # Remove target company itself
-    peers = peers[
-        peers["company_id"]
-        .astype(str)
-        .str.upper()
-        != ticker.upper()
-    ]
+    peers = peers[peers["company_id"].astype(str).str.upper() != ticker.upper()]
 
     # --------------------------------------------------
     # Allowed sorting
@@ -140,11 +104,7 @@ def get_peers(
     if sort_by not in allowed_sort_columns:
         sort_by = "quality_score"
 
-    peers = peers.sort_values(
-        sort_by,
-        ascending=False,
-        na_position="last"
-    ).head(limit)
+    peers = peers.sort_values(sort_by, ascending=False, na_position="last").head(limit)
 
     # --------------------------------------------------
     # Build response
@@ -160,37 +120,17 @@ def get_peers(
                 "company_name": row["company_name"],
                 "broad_sector": row["broad_sector"],
                 "sub_sector": row["sub_sector"],
-                "roe_pct": clean_value(
-                    row.get("return_on_equity_pct")
-                ),
-                "debt_to_equity": clean_value(
-                    row.get("debt_to_equity")
-                ),
-                "revenue_cagr_5yr": clean_value(
-                    row.get("revenue_cagr_5yr")
-                ),
-                "fcf_cagr_5yr": clean_value(
-                    row.get("fcf_cagr_5yr")
-                ),
+                "roe_pct": clean_value(row.get("return_on_equity_pct")),
+                "debt_to_equity": clean_value(row.get("debt_to_equity")),
+                "revenue_cagr_5yr": clean_value(row.get("revenue_cagr_5yr")),
+                "fcf_cagr_5yr": clean_value(row.get("fcf_cagr_5yr")),
                 "operating_margin_pct": clean_value(
-                    row.get(
-                        "operating_profit_margin_pct"
-                    )
+                    row.get("operating_profit_margin_pct")
                 ),
-                "net_profit_margin_pct": clean_value(
-                    row.get(
-                        "net_profit_margin_pct"
-                    )
-                ),
-                "quality_score": clean_value(
-                    row.get("quality_score")
-                ),
-                "composite_score": clean_value(
-                    row.get("composite_score")
-                ),
-                "market_cap_crore": clean_value(
-                    row.get("market_cap_crore")
-                ),
+                "net_profit_margin_pct": clean_value(row.get("net_profit_margin_pct")),
+                "quality_score": clean_value(row.get("quality_score")),
+                "composite_score": clean_value(row.get("composite_score")),
+                "market_cap_crore": clean_value(row.get("market_cap_crore")),
             }
         )
 

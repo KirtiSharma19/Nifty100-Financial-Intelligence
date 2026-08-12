@@ -1,9 +1,7 @@
-from typing import Optional
 
 from fastapi import APIRouter, Query
 
 from src.services.ratio_engine import DatasetBuilder
-
 
 router = APIRouter(
     prefix="/screener",
@@ -19,26 +17,14 @@ def get_latest_data():
 
     df = DatasetBuilder().build_dataset()
 
-    df["year"] = (
-        df["year"]
-        .astype(str)
-        .str.extract(r"(\d{4})")[0]
-        .astype(int)
-    )
+    df["year"] = df["year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
 
     latest_year = df["year"].max()
 
-    latest = df[
-        df["year"] == latest_year
-    ].copy()
+    latest = df[df["year"] == latest_year].copy()
 
-    latest = (
-        latest
-        .drop_duplicates(
-            subset=["company_id"],
-            keep="first"
-        )
-        .reset_index(drop=True)
+    latest = latest.drop_duplicates(subset=["company_id"], keep="first").reset_index(
+        drop=True
     )
 
     return latest
@@ -64,56 +50,18 @@ def clean_value(value):
 
 @router.get("")
 def screen_companies(
-    sector: Optional[str] = Query(
-        default=None
-    ),
-
-    min_roe: Optional[float] = Query(
-        default=None
-    ),
-
-    max_roe: Optional[float] = Query(
-        default=None
-    ),
-
-    min_debt_to_equity: Optional[float] = Query(
-        default=None
-    ),
-
-    max_debt_to_equity: Optional[float] = Query(
-        default=None
-    ),
-
-    min_revenue_cagr: Optional[float] = Query(
-        default=None
-    ),
-
-    min_fcf_cagr: Optional[float] = Query(
-        default=None
-    ),
-
-    min_operating_margin: Optional[float] = Query(
-        default=None
-    ),
-
-    sort_by: str = Query(
-        default="quality_score"
-    ),
-
-    descending: bool = Query(
-        default=True
-    ),
-
-    page: int = Query(
-        default=1,
-        ge=1
-    ),
-
-    page_size: int = Query(
-        default=20,
-        ge=1,
-        le=100
-    ),
+    sector: str | None = Query(default=None),
+    min_roe: float | None = Query(default=None),
+    max_roe: float | None = Query(default=None),
+    min_debt_to_equity: float | None = Query(default=None),
+    max_debt_to_equity: float | None = Query(default=None),
+    min_revenue_cagr: float | None = Query(default=None),
+    min_fcf_cagr: float | None = Query(default=None),
+    min_operating_margin: float | None = Query(default=None),
+    sort_by: str = Query(default="quality_score"),
+    descending: bool = Query(default=True),
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100),
 ):
     """
     Screen NIFTY100 companies using financial KPIs.
@@ -127,13 +75,7 @@ def screen_companies(
 
     if sector:
         df = df[
-            df["broad_sector"]
-            .astype(str)
-            .str.contains(
-                sector,
-                case=False,
-                na=False
-            )
+            df["broad_sector"].astype(str).str.contains(sector, case=False, na=False)
         ]
 
     # --------------------------------------------------
@@ -141,62 +83,41 @@ def screen_companies(
     # --------------------------------------------------
 
     if min_roe is not None:
-        df = df[
-            df["return_on_equity_pct"]
-            >= min_roe
-        ]
+        df = df[df["return_on_equity_pct"] >= min_roe]
 
     if max_roe is not None:
-        df = df[
-            df["return_on_equity_pct"]
-            <= max_roe
-        ]
+        df = df[df["return_on_equity_pct"] <= max_roe]
 
     # --------------------------------------------------
     # DEBT TO EQUITY
     # --------------------------------------------------
 
     if min_debt_to_equity is not None:
-        df = df[
-            df["debt_to_equity"]
-            >= min_debt_to_equity
-        ]
+        df = df[df["debt_to_equity"] >= min_debt_to_equity]
 
     if max_debt_to_equity is not None:
-        df = df[
-            df["debt_to_equity"]
-            <= max_debt_to_equity
-        ]
+        df = df[df["debt_to_equity"] <= max_debt_to_equity]
 
     # --------------------------------------------------
     # REVENUE CAGR
     # --------------------------------------------------
 
     if min_revenue_cagr is not None:
-        df = df[
-            df["revenue_cagr_5yr"]
-            >= min_revenue_cagr
-        ]
+        df = df[df["revenue_cagr_5yr"] >= min_revenue_cagr]
 
     # --------------------------------------------------
     # FCF CAGR
     # --------------------------------------------------
 
     if min_fcf_cagr is not None:
-        df = df[
-            df["fcf_cagr_5yr"]
-            >= min_fcf_cagr
-        ]
+        df = df[df["fcf_cagr_5yr"] >= min_fcf_cagr]
 
     # --------------------------------------------------
     # OPERATING MARGIN
     # --------------------------------------------------
 
     if min_operating_margin is not None:
-        df = df[
-            df["operating_profit_margin_pct"]
-            >= min_operating_margin
-        ]
+        df = df[df["operating_profit_margin_pct"] >= min_operating_margin]
 
     # --------------------------------------------------
     # SORTING
@@ -219,11 +140,7 @@ def screen_companies(
 
     if sort_by in df.columns:
 
-        df = df.sort_values(
-            sort_by,
-            ascending=not descending,
-            na_position="last"
-        )
+        df = df.sort_values(sort_by, ascending=not descending, na_position="last")
 
     # --------------------------------------------------
     # TOTAL RESULTS
@@ -235,15 +152,11 @@ def screen_companies(
     # PAGINATION
     # --------------------------------------------------
 
-    start = (
-        page - 1
-    ) * page_size
+    start = (page - 1) * page_size
 
     end = start + page_size
 
-    paginated = df.iloc[
-        start:end
-    ]
+    paginated = df.iloc[start:end]
 
     # --------------------------------------------------
     # RESPONSE
@@ -258,32 +171,16 @@ def screen_companies(
                 "company_id": row["company_id"],
                 "company_name": row["company_name"],
                 "broad_sector": row["broad_sector"],
-                "roe_pct": clean_value(
-                    row.get("return_on_equity_pct")
-                ),
-                "debt_to_equity": clean_value(
-                    row.get("debt_to_equity")
-                ),
-                "revenue_cagr_5yr": clean_value(
-                    row.get("revenue_cagr_5yr")
-                ),
-                "fcf_cagr_5yr": clean_value(
-                    row.get("fcf_cagr_5yr")
-                ),
+                "roe_pct": clean_value(row.get("return_on_equity_pct")),
+                "debt_to_equity": clean_value(row.get("debt_to_equity")),
+                "revenue_cagr_5yr": clean_value(row.get("revenue_cagr_5yr")),
+                "fcf_cagr_5yr": clean_value(row.get("fcf_cagr_5yr")),
                 "operating_margin_pct": clean_value(
-                    row.get(
-                        "operating_profit_margin_pct"
-                    )
+                    row.get("operating_profit_margin_pct")
                 ),
-                "quality_score": clean_value(
-                    row.get("quality_score")
-                ),
-                "composite_score": clean_value(
-                    row.get("composite_score")
-                ),
-                "market_cap_crore": clean_value(
-                    row.get("market_cap_crore")
-                ),
+                "quality_score": clean_value(row.get("quality_score")),
+                "composite_score": clean_value(row.get("composite_score")),
+                "market_cap_crore": clean_value(row.get("market_cap_crore")),
             }
         )
 

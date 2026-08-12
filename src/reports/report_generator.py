@@ -15,15 +15,12 @@ columns = [
     "debt_to_equity",
     "free_cash_flow_cr",
     "capex_cr",
-    "cash_from_operations_cr"
+    "cash_from_operations_cr",
 ]
 
 report = df[columns]
 
-report.to_csv(
-    "exports/final_financial_report.csv",
-    index=False
-)
+report.to_csv("exports/final_financial_report.csv", index=False)
 
 print()
 print("Final Financial Report Generated")

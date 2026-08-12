@@ -1,17 +1,17 @@
 import os
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 
 from src.services.ratio_engine import DatasetBuilder
 
-
 # ============================================================
 # CAGR HELPER
 # ============================================================
+
 
 def calculate_cagr(start_value, end_value, years):
     """
@@ -33,9 +33,7 @@ def calculate_cagr(start_value, end_value, years):
         return np.nan
 
     try:
-        cagr = (
-            ((end_value / start_value) ** (1 / years)) - 1
-        ) * 100
+        cagr = (((end_value / start_value) ** (1 / years)) - 1) * 100
 
         return round(cagr, 2)
 
@@ -64,16 +62,9 @@ print("Companies   :", df["company_id"].nunique())
 # CLEAN YEAR
 # ============================================================
 
-df["year"] = (
-    df["year"]
-    .astype(str)
-    .str.extract(r"(\d{4})")[0]
-)
+df["year"] = df["year"].astype(str).str.extract(r"(\d{4})")[0]
 
-df["year"] = pd.to_numeric(
-    df["year"],
-    errors="coerce"
-)
+df["year"] = pd.to_numeric(df["year"], errors="coerce")
 
 df = df.dropna(subset=["year"])
 
@@ -84,9 +75,7 @@ df["year"] = df["year"].astype(int)
 # SORT DATA
 # ============================================================
 
-df = df.sort_values(
-    ["company_id", "year"]
-).copy()
+df = df.sort_values(["company_id", "year"]).copy()
 
 
 # ============================================================
@@ -104,11 +93,7 @@ df["fcf_cagr_5yr"] = np.nan
 
 for company in df["company_id"].dropna().unique():
 
-    company_data = (
-        df[df["company_id"] == company]
-        .sort_values("year")
-        .copy()
-    )
+    company_data = df[df["company_id"] == company].sort_values("year").copy()
 
     # Latest available year for this company
     company_latest_year = company_data["year"].max()
@@ -116,13 +101,9 @@ for company in df["company_id"].dropna().unique():
     # Exactly 5 years before latest year
     start_year = company_latest_year - 5
 
-    start_data = company_data[
-        company_data["year"] == start_year
-    ]
+    start_data = company_data[company_data["year"] == start_year]
 
-    end_data = company_data[
-        company_data["year"] == company_latest_year
-    ]
+    end_data = company_data[company_data["year"] == company_latest_year]
 
     # We need both years
     if start_data.empty or end_data.empty:
@@ -141,32 +122,18 @@ for company in df["company_id"].dropna().unique():
     # Revenue / Sales CAGR
     # --------------------------------------------------------
 
-    revenue_cagr = calculate_cagr(
-        start_sales,
-        end_sales,
-        5
-    )
+    revenue_cagr = calculate_cagr(start_sales, end_sales, 5)
 
     # --------------------------------------------------------
     # Free Cash Flow CAGR
     # --------------------------------------------------------
 
-    fcf_cagr = calculate_cagr(
-        start_fcf,
-        end_fcf,
-        5
-    )
+    fcf_cagr = calculate_cagr(start_fcf, end_fcf, 5)
 
     # Assign values to all rows belonging to this company
-    df.loc[
-        df["company_id"] == company,
-        "revenue_cagr_5yr"
-    ] = revenue_cagr
+    df.loc[df["company_id"] == company, "revenue_cagr_5yr"] = revenue_cagr
 
-    df.loc[
-        df["company_id"] == company,
-        "fcf_cagr_5yr"
-    ] = fcf_cagr
+    df.loc[df["company_id"] == company, "fcf_cagr_5yr"] = fcf_cagr
 
 
 # ============================================================
@@ -175,9 +142,7 @@ for company in df["company_id"].dropna().unique():
 
 latest_year = df["year"].max()
 
-latest = df[
-    df["year"] == latest_year
-].copy()
+latest = df[df["year"] == latest_year].copy()
 
 
 print()
@@ -199,27 +164,14 @@ print("CAGR FEATURES CHECK")
 print("=" * 70)
 
 print(
-    latest[
-        [
-            "company_id",
-            "company_name",
-            "revenue_cagr_5yr",
-            "fcf_cagr_5yr"
-        ]
-    ].head(10)
+    latest[["company_id", "company_name", "revenue_cagr_5yr", "fcf_cagr_5yr"]].head(10)
 )
 
 
 print()
-print(
-    "Missing Revenue CAGR:",
-    latest["revenue_cagr_5yr"].isna().sum()
-)
+print("Missing Revenue CAGR:", latest["revenue_cagr_5yr"].isna().sum())
 
-print(
-    "Missing FCF CAGR:",
-    latest["fcf_cagr_5yr"].isna().sum()
-)
+print("Missing FCF CAGR:", latest["fcf_cagr_5yr"].isna().sum())
 
 
 # ============================================================
@@ -239,11 +191,7 @@ features = [
 # CHECK REQUIRED FEATURES
 # ============================================================
 
-missing_features = [
-    col
-    for col in features
-    if col not in latest.columns
-]
+missing_features = [col for col in features if col not in latest.columns]
 
 if missing_features:
 
@@ -264,10 +212,7 @@ if missing_features:
 
 for col in features:
 
-    latest[col] = pd.to_numeric(
-        latest[col],
-        errors="coerce"
-    )
+    latest[col] = pd.to_numeric(latest[col], errors="coerce")
 
 
 # ============================================================
@@ -282,12 +227,8 @@ print("=" * 70)
 for col in features:
 
     # First: fill missing value using sector median
-    latest[col] = (
-        latest
-        .groupby("broad_sector")[col]
-        .transform(
-            lambda x: x.fillna(x.median())
-        )
+    latest[col] = latest.groupby("broad_sector")[col].transform(
+        lambda x: x.fillna(x.median())
     )
 
     # Second: if sector median is also missing,
@@ -296,26 +237,18 @@ for col in features:
 
     if pd.isna(global_median):
 
-        print(
-            f"WARNING: {col} has no valid values."
-        )
+        print(f"WARNING: {col} has no valid values.")
 
     else:
 
-        latest[col] = latest[col].fillna(
-            global_median
-        )
+        latest[col] = latest[col].fillna(global_median)
 
 
 # ============================================================
 # FINAL NaN CHECK
 # ============================================================
 
-remaining_missing = (
-    latest[features]
-    .isna()
-    .sum()
-)
+remaining_missing = latest[features].isna().sum()
 
 print()
 print("Remaining missing values:")
@@ -338,9 +271,7 @@ if remaining_missing.sum() > 0:
 # FEATURE MATRIX
 # ============================================================
 
-X = latest[
-    features
-].copy()
+X = latest[features].copy()
 
 
 # ============================================================
@@ -361,15 +292,9 @@ X_scaled = scaler.fit_transform(X)
 # CREATE OUTPUT DIRECTORIES
 # ============================================================
 
-os.makedirs(
-    "reports",
-    exist_ok=True
-)
+os.makedirs("reports", exist_ok=True)
 
-os.makedirs(
-    "output",
-    exist_ok=True
-)
+os.makedirs("output", exist_ok=True)
 
 
 # ============================================================
@@ -385,65 +310,38 @@ inertias = []
 
 for k in range(2, 11):
 
-    model = KMeans(
-        n_clusters=k,
-        random_state=42,
-        n_init=10
-    )
+    model = KMeans(n_clusters=k, random_state=42, n_init=10)
 
     model.fit(X_scaled)
 
-    inertias.append(
-        model.inertia_
-    )
+    inertias.append(model.inertia_)
 
 
 # ============================================================
 # ELBOW PLOT
 # ============================================================
 
-plt.figure(
-    figsize=(9, 6)
-)
+plt.figure(figsize=(9, 6))
 
-plt.plot(
-    range(2, 11),
-    inertias,
-    marker="o"
-)
+plt.plot(range(2, 11), inertias, marker="o")
 
-plt.xlabel(
-    "Number of Clusters (k)"
-)
+plt.xlabel("Number of Clusters (k)")
 
-plt.ylabel(
-    "Inertia"
-)
+plt.ylabel("Inertia")
 
-plt.title(
-    "K-Means Elbow Plot"
-)
+plt.title("K-Means Elbow Plot")
 
-plt.xticks(
-    range(2, 11)
-)
+plt.xticks(range(2, 11))
 
-plt.grid(
-    alpha=0.3
-)
+plt.grid(alpha=0.3)
 
 plt.tight_layout()
 
-plt.savefig(
-    "reports/elbow_plot.png",
-    dpi=150
-)
+plt.savefig("reports/elbow_plot.png", dpi=150)
 
 plt.close()
 
-print(
-    "Saved: reports/elbow_plot.png"
-)
+print("Saved: reports/elbow_plot.png")
 
 
 # ============================================================
@@ -455,15 +353,9 @@ print("=" * 70)
 print("RUNNING FINAL K-MEANS")
 print("=" * 70)
 
-kmeans = KMeans(
-    n_clusters=5,
-    random_state=42,
-    n_init=10
-)
+kmeans = KMeans(n_clusters=5, random_state=42, n_init=10)
 
-latest["cluster_id"] = (
-    kmeans.fit_predict(X_scaled)
-)
+latest["cluster_id"] = kmeans.fit_predict(X_scaled)
 
 
 # ============================================================
@@ -471,10 +363,7 @@ latest["cluster_id"] = (
 # ============================================================
 
 centroids = pd.DataFrame(
-    scaler.inverse_transform(
-        kmeans.cluster_centers_
-    ),
-    columns=features
+    scaler.inverse_transform(kmeans.cluster_centers_), columns=features
 )
 
 centroids.index.name = "cluster_id"
@@ -485,9 +374,7 @@ print("=" * 70)
 print("CLUSTER PROFILES")
 print("=" * 70)
 
-print(
-    centroids.round(2)
-)
+print(centroids.round(2))
 
 
 # ============================================================
@@ -499,11 +386,7 @@ print("=" * 70)
 print("CLUSTER SIZE")
 print("=" * 70)
 
-cluster_sizes = (
-    latest["cluster_id"]
-    .value_counts()
-    .sort_index()
-)
+cluster_sizes = latest["cluster_id"].value_counts().sort_index()
 
 print(cluster_sizes)
 
@@ -513,19 +396,11 @@ print(cluster_sizes)
 # ============================================================
 
 cluster_labels = latest[
-    [
-        "company_id",
-        "company_name",
-        "broad_sector",
-        "cluster_id"
-    ]
+    ["company_id", "company_name", "broad_sector", "cluster_id"]
 ].copy()
 
 
-cluster_labels.to_csv(
-    "output/cluster_labels.csv",
-    index=False
-)
+cluster_labels.to_csv("output/cluster_labels.csv", index=False)
 
 
 # ============================================================
@@ -542,15 +417,12 @@ cluster_output = latest[
         "revenue_cagr_5yr",
         "fcf_cagr_5yr",
         "operating_profit_margin_pct",
-        "cluster_id"
+        "cluster_id",
     ]
 ].copy()
 
 
-cluster_output.to_csv(
-    "output/cluster_analysis.csv",
-    index=False
-)
+cluster_output.to_csv("output/cluster_analysis.csv", index=False)
 
 
 # ============================================================
@@ -562,15 +434,9 @@ print("=" * 70)
 print("CLUSTERING COMPLETED")
 print("=" * 70)
 
-print(
-    "Clusters  :",
-    latest["cluster_id"].nunique()
-)
+print("Clusters  :", latest["cluster_id"].nunique())
 
-print(
-    "Companies :",
-    latest["company_id"].nunique()
-)
+print("Companies :", latest["company_id"].nunique())
 
 print()
 print("Saved files:")

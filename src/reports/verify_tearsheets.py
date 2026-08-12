@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 REPORT_FOLDER = Path("reports/tearsheets")

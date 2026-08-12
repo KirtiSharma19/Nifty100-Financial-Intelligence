@@ -2,7 +2,6 @@ from fastapi.testclient import TestClient
 
 from src.api.main import app
 
-
 client = TestClient(app)
 
 
@@ -10,10 +9,9 @@ client = TestClient(app)
 # HEALTH
 # ============================================================
 
+
 def test_health_endpoint():
-    response = client.get(
-        "/api/v1/health"
-    )
+    response = client.get("/api/v1/health")
 
     assert response.status_code == 200
 
@@ -29,10 +27,9 @@ def test_health_endpoint():
 # COMPANIES
 # ============================================================
 
+
 def test_companies_endpoint():
-    response = client.get(
-        "/api/v1/companies"
-    )
+    response = client.get("/api/v1/companies")
 
     assert response.status_code == 200
 
@@ -44,9 +41,7 @@ def test_companies_endpoint():
 
 
 def test_company_profile():
-    response = client.get(
-        "/api/v1/companies/TCS"
-    )
+    response = client.get("/api/v1/companies/TCS")
 
     assert response.status_code == 200
 
@@ -57,9 +52,7 @@ def test_company_profile():
 
 
 def test_invalid_company_profile():
-    response = client.get(
-        "/api/v1/companies/INVALID_COMPANY"
-    )
+    response = client.get("/api/v1/companies/INVALID_COMPANY")
 
     assert response.status_code == 404
 
@@ -68,10 +61,9 @@ def test_invalid_company_profile():
 # P&L
 # ============================================================
 
+
 def test_company_profit_loss():
-    response = client.get(
-        "/api/v1/companies/TCS/pl"
-    )
+    response = client.get("/api/v1/companies/TCS/pl")
 
     assert response.status_code == 200
 
@@ -97,10 +89,9 @@ def test_profit_loss_year_filter():
 # BALANCE SHEET
 # ============================================================
 
+
 def test_balance_sheet():
-    response = client.get(
-        "/api/v1/companies/TCS/bs"
-    )
+    response = client.get("/api/v1/companies/TCS/bs")
 
     assert response.status_code == 200
 
@@ -113,10 +104,9 @@ def test_balance_sheet():
 # CASH FLOW
 # ============================================================
 
+
 def test_cashflow():
-    response = client.get(
-        "/api/v1/companies/TCS/cashflow"
-    )
+    response = client.get("/api/v1/companies/TCS/cashflow")
 
     assert response.status_code == 200
 
@@ -129,10 +119,9 @@ def test_cashflow():
 # RATIOS
 # ============================================================
 
+
 def test_ratios():
-    response = client.get(
-        "/api/v1/companies/TCS/ratios"
-    )
+    response = client.get("/api/v1/companies/TCS/ratios")
 
     assert response.status_code == 200
 
@@ -146,10 +135,9 @@ def test_ratios():
 # TEARSHEET
 # ============================================================
 
+
 def test_tearsheet():
-    response = client.get(
-        "/api/v1/companies/TCS/tearsheet"
-    )
+    response = client.get("/api/v1/companies/TCS/tearsheet")
 
     assert response.status_code == 200
 
@@ -168,10 +156,9 @@ def test_tearsheet():
 # SCREENER
 # ============================================================
 
+
 def test_screener():
-    response = client.get(
-        "/api/v1/screener"
-    )
+    response = client.get("/api/v1/screener")
 
     assert response.status_code == 200
 
@@ -184,9 +171,7 @@ def test_screener():
 def test_screener_roe_filter():
     response = client.get(
         "/api/v1/screener",
-        params={
-            "min_roe": 20
-        },
+        params={"min_roe": 20},
     )
 
     assert response.status_code == 200
@@ -213,10 +198,9 @@ def test_screener_pagination():
 # SECTORS
 # ============================================================
 
+
 def test_sectors():
-    response = client.get(
-        "/api/v1/sectors"
-    )
+    response = client.get("/api/v1/sectors")
 
     assert response.status_code == 200
 
@@ -227,9 +211,7 @@ def test_sectors():
 
 
 def test_invalid_sector():
-    response = client.get(
-        "/api/v1/sectors/INVALID_SECTOR"
-    )
+    response = client.get("/api/v1/sectors/INVALID_SECTOR")
 
     assert response.status_code == 404
 
@@ -238,10 +220,9 @@ def test_invalid_sector():
 # PEERS
 # ============================================================
 
+
 def test_peers():
-    response = client.get(
-        "/api/v1/peers/TCS"
-    )
+    response = client.get("/api/v1/peers/TCS")
 
     assert response.status_code == 200
 
@@ -252,9 +233,7 @@ def test_peers():
 
 
 def test_invalid_peer_company():
-    response = client.get(
-        "/api/v1/peers/INVALID_COMPANY"
-    )
+    response = client.get("/api/v1/peers/INVALID_COMPANY")
 
     assert response.status_code == 404
 
@@ -263,10 +242,9 @@ def test_invalid_peer_company():
 # VALUATION
 # ============================================================
 
+
 def test_valuation():
-    response = client.get(
-        "/api/v1/valuation/TCS"
-    )
+    response = client.get("/api/v1/valuation/TCS")
 
     assert response.status_code == 200
 
@@ -278,9 +256,7 @@ def test_valuation():
 
 
 def test_invalid_valuation_company():
-    response = client.get(
-        "/api/v1/valuation/INVALID_COMPANY"
-    )
+    response = client.get("/api/v1/valuation/INVALID_COMPANY")
 
     assert response.status_code == 404
 
@@ -289,10 +265,9 @@ def test_invalid_valuation_company():
 # PORTFOLIO
 # ============================================================
 
+
 def test_portfolio():
-    response = client.get(
-        "/api/v1/portfolio"
-    )
+    response = client.get("/api/v1/portfolio")
 
     assert response.status_code == 200
 
@@ -308,10 +283,9 @@ def test_portfolio():
 # DOCUMENTS
 # ============================================================
 
+
 def test_documents():
-    response = client.get(
-        "/api/v1/documents"
-    )
+    response = client.get("/api/v1/documents")
 
     assert response.status_code == 200
 
@@ -322,8 +296,6 @@ def test_documents():
 
 
 def test_invalid_document():
-    response = client.get(
-        "/api/v1/documents/not_a_real_document"
-    )
+    response = client.get("/api/v1/documents/not_a_real_document")
 
     assert response.status_code == 404

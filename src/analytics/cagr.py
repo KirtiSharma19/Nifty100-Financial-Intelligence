@@ -54,9 +54,7 @@ class CAGRCalculator:
             return None
 
         try:
-            cagr = (
-                (end_value / start_value) ** (1 / years) - 1
-            ) * 100
+            cagr = ((end_value / start_value) ** (1 / years) - 1) * 100
 
             return round(cagr, 2)
 

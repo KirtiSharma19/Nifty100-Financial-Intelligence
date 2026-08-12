@@ -1,4 +1,3 @@
-import pandas as pd
 
 from src.services.ratio_engine import DatasetBuilder
 
@@ -29,15 +28,9 @@ def generate_final_report():
             "ev_ebitda",
             "dividend_yield_pct",
         ]
-    ].sort_values(
-        "quality_score",
-        ascending=False
-    )
+    ].sort_values("quality_score", ascending=False)
 
-    report.to_csv(
-        "exports/final_financial_report.csv",
-        index=False
-    )
+    report.to_csv("exports/final_financial_report.csv", index=False)
 
     print()
     print("=" * 60)

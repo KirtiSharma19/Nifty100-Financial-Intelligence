@@ -1,9 +1,7 @@
 import os
 import sys
 
-PROJECT_ROOT = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "..")
-)
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
@@ -27,7 +25,7 @@ st.set_page_config(
     page_title="Nifty100 Financial Intelligence",
     page_icon="📈",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
 )
 
 # -------------------------------------------------
@@ -37,29 +35,17 @@ st.set_page_config(
 st.sidebar.title("Navigation")
 
 page = st.sidebar.radio(
-
     "Select Screen",
-
     [
-
         "Home",
-
         "Company Profile",
-
         "Financial Screener",
-
         "Peer Comparison",
-
         "Trend Analysis",
-
         "Sector Analysis",
-
         "Capital Allocation",
-
-        "Reports"
-
-    ]
-
+        "Reports",
+    ],
 )
 
 # -------------------------------------------------

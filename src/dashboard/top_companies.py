@@ -27,25 +27,13 @@ def show_top_companies():
 
     col1, col2, col3, col4 = st.columns(4)
 
-    col1.metric(
-        "Companies",
-        latest["company_name"].nunique()
-    )
+    col1.metric("Companies", latest["company_name"].nunique())
 
-    col2.metric(
-        "Highest Quality",
-        round(latest["quality_score"].max(), 2)
-    )
+    col2.metric("Highest Quality", round(latest["quality_score"].max(), 2))
 
-    col3.metric(
-        "Highest ROE %",
-        round(latest["return_on_equity_pct"].max(), 2)
-    )
+    col3.metric("Highest ROE %", round(latest["return_on_equity_pct"].max(), 2))
 
-    col4.metric(
-        "Highest Margin %",
-        round(latest["net_profit_margin_pct"].max(), 2)
-    )
+    col4.metric("Highest Margin %", round(latest["net_profit_margin_pct"].max(), 2))
 
     st.divider()
 
@@ -65,23 +53,13 @@ def show_top_companies():
                 "net_profit_margin_pct",
             ]
         ]
-        .sort_values(
-            "quality_score",
-            ascending=False
-        )
+        .sort_values("quality_score", ascending=False)
         .head(10)
     )
 
-    st.dataframe(
-        top_quality,
-        use_container_width=True
-    )
+    st.dataframe(top_quality, use_container_width=True)
 
-    st.bar_chart(
-        top_quality.set_index("company_name")[
-            "quality_score"
-        ]
-    )
+    st.bar_chart(top_quality.set_index("company_name")["quality_score"])
 
     st.divider()
 
@@ -98,23 +76,13 @@ def show_top_companies():
                 "return_on_equity_pct",
             ]
         ]
-        .sort_values(
-            "return_on_equity_pct",
-            ascending=False
-        )
+        .sort_values("return_on_equity_pct", ascending=False)
         .head(10)
     )
 
-    st.dataframe(
-        top_roe,
-        use_container_width=True
-    )
+    st.dataframe(top_roe, use_container_width=True)
 
-    st.bar_chart(
-        top_roe.set_index("company_name")[
-            "return_on_equity_pct"
-        ]
-    )
+    st.bar_chart(top_roe.set_index("company_name")["return_on_equity_pct"])
 
     st.divider()
 
@@ -131,23 +99,13 @@ def show_top_companies():
                 "net_profit_margin_pct",
             ]
         ]
-        .sort_values(
-            "net_profit_margin_pct",
-            ascending=False
-        )
+        .sort_values("net_profit_margin_pct", ascending=False)
         .head(10)
     )
 
-    st.dataframe(
-        top_margin,
-        use_container_width=True
-    )
+    st.dataframe(top_margin, use_container_width=True)
 
-    st.bar_chart(
-        top_margin.set_index("company_name")[
-            "net_profit_margin_pct"
-        ]
-    )
+    st.bar_chart(top_margin.set_index("company_name")["net_profit_margin_pct"])
 
     st.divider()
 
@@ -164,23 +122,13 @@ def show_top_companies():
                 "free_cash_flow_cr",
             ]
         ]
-        .sort_values(
-            "free_cash_flow_cr",
-            ascending=False
-        )
+        .sort_values("free_cash_flow_cr", ascending=False)
         .head(10)
     )
 
-    st.dataframe(
-        top_cash,
-        use_container_width=True
-    )
+    st.dataframe(top_cash, use_container_width=True)
 
-    st.bar_chart(
-        top_cash.set_index("company_name")[
-            "free_cash_flow_cr"
-        ]
-    )
+    st.bar_chart(top_cash.set_index("company_name")["free_cash_flow_cr"])
 
     st.divider()
 
@@ -188,9 +136,7 @@ def show_top_companies():
     # Download CSV
     # ----------------------------------------
 
-    csv = top_quality.to_csv(
-        index=False
-    ).encode("utf-8")
+    csv = top_quality.to_csv(index=False).encode("utf-8")
 
     st.download_button(
         "📥 Download Top Companies",

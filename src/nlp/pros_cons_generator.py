@@ -1,4 +1,5 @@
 import os
+
 import pandas as pd
 
 INPUT_FILE = "output/financial_ratios_cleaned.csv"
@@ -21,114 +22,138 @@ for company, grp in df.groupby("company_id"):
     # ---------------- PRO RULES ----------------
 
     if latest["return_on_equity_pct"] >= 20:
-        rows.append({
-            "company_id": company,
-            "type": "Pro",
-            "rule_id": "P01",
-            "text": "High Return on Equity",
-            "confidence_pct": 90
-        })
+        rows.append(
+            {
+                "company_id": company,
+                "type": "Pro",
+                "rule_id": "P01",
+                "text": "High Return on Equity",
+                "confidence_pct": 90,
+            }
+        )
 
     if latest["operating_profit_margin_pct"] >= 25:
-        rows.append({
-            "company_id": company,
-            "type": "Pro",
-            "rule_id": "P02",
-            "text": "Strong Operating Margin",
-            "confidence_pct": 85
-        })
+        rows.append(
+            {
+                "company_id": company,
+                "type": "Pro",
+                "rule_id": "P02",
+                "text": "Strong Operating Margin",
+                "confidence_pct": 85,
+            }
+        )
 
     if latest["debt_to_equity"] <= 0.2:
-        rows.append({
-            "company_id": company,
-            "type": "Pro",
-            "rule_id": "P03",
-            "text": "Very Low Debt",
-            "confidence_pct": 88
-        })
+        rows.append(
+            {
+                "company_id": company,
+                "type": "Pro",
+                "rule_id": "P03",
+                "text": "Very Low Debt",
+                "confidence_pct": 88,
+            }
+        )
 
     if latest["interest_coverage"] >= 10:
-        rows.append({
-            "company_id": company,
-            "type": "Pro",
-            "rule_id": "P04",
-            "text": "Excellent Interest Coverage",
-            "confidence_pct": 84
-        })
+        rows.append(
+            {
+                "company_id": company,
+                "type": "Pro",
+                "rule_id": "P04",
+                "text": "Excellent Interest Coverage",
+                "confidence_pct": 84,
+            }
+        )
 
     if latest["cash_from_operations_cr"] > 0:
-        rows.append({
-            "company_id": company,
-            "type": "Pro",
-            "rule_id": "P05",
-            "text": "Positive Cash From Operations",
-            "confidence_pct": 80
-        })
+        rows.append(
+            {
+                "company_id": company,
+                "type": "Pro",
+                "rule_id": "P05",
+                "text": "Positive Cash From Operations",
+                "confidence_pct": 80,
+            }
+        )
 
     if latest["free_cash_flow_cr"] > 0:
-        rows.append({
-            "company_id": company,
-            "type": "Pro",
-            "rule_id": "P06",
-            "text": "Positive Free Cash Flow",
-            "confidence_pct": 82
-        })
+        rows.append(
+            {
+                "company_id": company,
+                "type": "Pro",
+                "rule_id": "P06",
+                "text": "Positive Free Cash Flow",
+                "confidence_pct": 82,
+            }
+        )
 
     # ---------------- CON RULES ----------------
 
     if latest["return_on_equity_pct"] < 10:
-        rows.append({
-            "company_id": company,
-            "type": "Con",
-            "rule_id": "C01",
-            "text": "Weak ROE",
-            "confidence_pct": 85
-        })
+        rows.append(
+            {
+                "company_id": company,
+                "type": "Con",
+                "rule_id": "C01",
+                "text": "Weak ROE",
+                "confidence_pct": 85,
+            }
+        )
 
     if latest["operating_profit_margin_pct"] < 10:
-        rows.append({
-            "company_id": company,
-            "type": "Con",
-            "rule_id": "C02",
-            "text": "Weak Operating Margin",
-            "confidence_pct": 84
-        })
+        rows.append(
+            {
+                "company_id": company,
+                "type": "Con",
+                "rule_id": "C02",
+                "text": "Weak Operating Margin",
+                "confidence_pct": 84,
+            }
+        )
 
     if latest["debt_to_equity"] > 2:
-        rows.append({
-            "company_id": company,
-            "type": "Con",
-            "rule_id": "C03",
-            "text": "High Debt",
-            "confidence_pct": 88
-        })
+        rows.append(
+            {
+                "company_id": company,
+                "type": "Con",
+                "rule_id": "C03",
+                "text": "High Debt",
+                "confidence_pct": 88,
+            }
+        )
 
     if latest["interest_coverage"] < 1.5:
-        rows.append({
-            "company_id": company,
-            "type": "Con",
-            "rule_id": "C04",
-            "text": "Poor Interest Coverage",
-            "confidence_pct": 90
-        })
+        rows.append(
+            {
+                "company_id": company,
+                "type": "Con",
+                "rule_id": "C04",
+                "text": "Poor Interest Coverage",
+                "confidence_pct": 90,
+            }
+        )
 
     if latest["cash_from_operations_cr"] < 0:
-        rows.append({
-            "company_id": company,
-            "type": "Con",
-            "rule_id": "C05",
-            "text": "Negative Operating Cash Flow",
-            "confidence_pct": 86
-        })
+        rows.append(
+            {
+                "company_id": company,
+                "type": "Con",
+                "rule_id": "C05",
+                "text": "Negative Operating Cash Flow",
+                "confidence_pct": 86,
+            }
+        )
 
     if latest["free_cash_flow_cr"] < 0:
-        rows.append({
-            "company_id": company,
-            "type": "Con",
-            "rule_id": "C06",
-            "text": "Negative Free Cash Flow",
-            "confidence_pct": 88
-        })
+        rows.append(
+            {
+                "company_id": company,
+                "type": "Con",
+                "rule_id": "C06",
+                "text": "Negative Free Cash Flow",
+                "confidence_pct": 88,
+            }
+        )
 
 result = pd.DataFrame(rows)
 

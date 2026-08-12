@@ -5,10 +5,10 @@ from src.analytics.ratios import (
     calculate_ratios,
 )
 
-
 # ============================================================
 # SAFE DIVIDE TESTS
 # ============================================================
+
 
 def test_safe_divide_normal():
     result = RatioEngine.safe_divide(100, 20)
@@ -38,6 +38,7 @@ def test_safe_divide_nan_denominator():
 # NET PROFIT MARGIN TESTS
 # ============================================================
 
+
 def test_net_profit_margin_normal():
     result = RatioEngine.net_profit_margin(20, 100)
 
@@ -65,6 +66,7 @@ def test_net_profit_margin_none_sales():
 # ============================================================
 # OPERATING PROFIT MARGIN TESTS
 # ============================================================
+
 
 def test_operating_profit_margin_normal():
     result = RatioEngine.operating_profit_margin(25, 100)
@@ -94,6 +96,7 @@ def test_operating_profit_margin_none_sales():
 # DEBT TO EQUITY TESTS
 # ============================================================
 
+
 def test_debt_to_equity_normal():
     result = RatioEngine.debt_to_equity(50, 100)
 
@@ -121,6 +124,7 @@ def test_debt_to_equity_negative_equity():
 # ============================================================
 # RETURN ON EQUITY TESTS
 # ============================================================
+
 
 def test_return_on_equity_normal():
     result = RatioEngine.return_on_equity(20, 100)
@@ -150,26 +154,31 @@ def test_return_on_equity_none_equity():
 # CALCULATE RATIOS - BASIC TEST
 # ============================================================
 
+
 def test_calculate_ratios_basic():
 
-    pl_df = pd.DataFrame({
-        "company_id": ["TEST"],
-        "year": [2024],
-        "net_profit": [10],
-        "sales": [100],
-        "operating_profit": [20],
-        "other_income": [5],
-        "interest": [5],
-    })
+    pl_df = pd.DataFrame(
+        {
+            "company_id": ["TEST"],
+            "year": [2024],
+            "net_profit": [10],
+            "sales": [100],
+            "operating_profit": [20],
+            "other_income": [5],
+            "interest": [5],
+        }
+    )
 
-    bs_df = pd.DataFrame({
-        "company_id": ["TEST"],
-        "year": [2024],
-        "equity_capital": [50],
-        "reserves": [10],
-        "borrowings": [40],
-        "total_assets": [200],
-    })
+    bs_df = pd.DataFrame(
+        {
+            "company_id": ["TEST"],
+            "year": [2024],
+            "equity_capital": [50],
+            "reserves": [10],
+            "borrowings": [40],
+            "total_assets": [200],
+        }
+    )
 
     result = calculate_ratios(pl_df, bs_df)
 
@@ -189,26 +198,31 @@ def test_calculate_ratios_basic():
 # CALCULATE RATIOS - VALUE TEST
 # ============================================================
 
+
 def test_calculate_ratios_values():
 
-    pl_df = pd.DataFrame({
-        "company_id": ["TEST"],
-        "year": [2024],
-        "net_profit": [10],
-        "sales": [100],
-        "operating_profit": [20],
-        "other_income": [5],
-        "interest": [5],
-    })
+    pl_df = pd.DataFrame(
+        {
+            "company_id": ["TEST"],
+            "year": [2024],
+            "net_profit": [10],
+            "sales": [100],
+            "operating_profit": [20],
+            "other_income": [5],
+            "interest": [5],
+        }
+    )
 
-    bs_df = pd.DataFrame({
-        "company_id": ["TEST"],
-        "year": [2024],
-        "equity_capital": [50],
-        "reserves": [10],
-        "borrowings": [40],
-        "total_assets": [200],
-    })
+    bs_df = pd.DataFrame(
+        {
+            "company_id": ["TEST"],
+            "year": [2024],
+            "equity_capital": [50],
+            "reserves": [10],
+            "borrowings": [40],
+            "total_assets": [200],
+        }
+    )
 
     result = calculate_ratios(pl_df, bs_df)
 
@@ -249,26 +263,31 @@ def test_calculate_ratios_values():
 # CALCULATE RATIOS - ZERO SALES TEST
 # ============================================================
 
+
 def test_calculate_ratios_zero_sales():
 
-    pl_df = pd.DataFrame({
-        "company_id": ["TEST"],
-        "year": [2024],
-        "net_profit": [10],
-        "sales": [0],
-        "operating_profit": [20],
-        "other_income": [5],
-        "interest": [5],
-    })
+    pl_df = pd.DataFrame(
+        {
+            "company_id": ["TEST"],
+            "year": [2024],
+            "net_profit": [10],
+            "sales": [0],
+            "operating_profit": [20],
+            "other_income": [5],
+            "interest": [5],
+        }
+    )
 
-    bs_df = pd.DataFrame({
-        "company_id": ["TEST"],
-        "year": [2024],
-        "equity_capital": [50],
-        "reserves": [10],
-        "borrowings": [40],
-        "total_assets": [200],
-    })
+    bs_df = pd.DataFrame(
+        {
+            "company_id": ["TEST"],
+            "year": [2024],
+            "equity_capital": [50],
+            "reserves": [10],
+            "borrowings": [40],
+            "total_assets": [200],
+        }
+    )
 
     result = calculate_ratios(pl_df, bs_df)
 
@@ -282,26 +301,31 @@ def test_calculate_ratios_zero_sales():
 # CALCULATE RATIOS - ZERO INTEREST TEST
 # ============================================================
 
+
 def test_calculate_ratios_zero_interest():
 
-    pl_df = pd.DataFrame({
-        "company_id": ["TEST"],
-        "year": [2024],
-        "net_profit": [10],
-        "sales": [100],
-        "operating_profit": [20],
-        "other_income": [5],
-        "interest": [0],
-    })
+    pl_df = pd.DataFrame(
+        {
+            "company_id": ["TEST"],
+            "year": [2024],
+            "net_profit": [10],
+            "sales": [100],
+            "operating_profit": [20],
+            "other_income": [5],
+            "interest": [0],
+        }
+    )
 
-    bs_df = pd.DataFrame({
-        "company_id": ["TEST"],
-        "year": [2024],
-        "equity_capital": [50],
-        "reserves": [10],
-        "borrowings": [0],
-        "total_assets": [200],
-    })
+    bs_df = pd.DataFrame(
+        {
+            "company_id": ["TEST"],
+            "year": [2024],
+            "equity_capital": [50],
+            "reserves": [10],
+            "borrowings": [0],
+            "total_assets": [200],
+        }
+    )
 
     result = calculate_ratios(pl_df, bs_df)
 

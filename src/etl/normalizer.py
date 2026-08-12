@@ -5,6 +5,7 @@ Handles all data normalization tasks before validation and database loading.
 """
 
 import re
+
 import pandas as pd
 
 

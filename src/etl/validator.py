@@ -14,6 +14,7 @@ DQ-05 Empty Rows
 """
 
 from pathlib import Path
+
 import pandas as pd
 
 OUTPUT_DIR = Path("output")
@@ -26,14 +27,7 @@ class DataValidator:
 
         self.failures = []
 
-    def log_failure(
-        self,
-        dataset,
-        rule,
-        severity,
-        row,
-        message
-    ):
+    def log_failure(self, dataset, rule, severity, row, message):
 
         self.failures.append(
             {
@@ -64,7 +58,7 @@ class DataValidator:
                         "DQ-01",
                         "CRITICAL",
                         int(idx),
-                        "Duplicate Primary Key"
+                        "Duplicate Primary Key",
                     )
 
             # -------------------------------
@@ -82,7 +76,7 @@ class DataValidator:
                         "DQ-02",
                         "CRITICAL",
                         int(idx),
-                        "company_id missing"
+                        "company_id missing",
                     )
 
             # -------------------------------
@@ -96,27 +90,16 @@ class DataValidator:
                 for idx in missing.index:
 
                     self.log_failure(
-                        dataset_name,
-                        "DQ-03",
-                        "WARNING",
-                        int(idx),
-                        "year missing"
+                        dataset_name, "DQ-03", "WARNING", int(idx), "year missing"
                     )
 
             # -------------------------------
             # DQ-04 Duplicate company-year
             # -------------------------------
 
-            if (
-                "company_id" in df.columns
-                and
-                "year" in df.columns
-            ):
+            if "company_id" in df.columns and "year" in df.columns:
 
-                dup = df.duplicated(
-                    subset=["company_id", "year"],
-                    keep=False
-                )
+                dup = df.duplicated(subset=["company_id", "year"], keep=False)
 
                 duplicate_rows = df[dup]
 
@@ -127,7 +110,7 @@ class DataValidator:
                         "DQ-04",
                         "WARNING",
                         int(idx),
-                        "Duplicate Company-Year"
+                        "Duplicate Company-Year",
                     )
 
             # -------------------------------
@@ -139,11 +122,7 @@ class DataValidator:
             for idx in empty_rows.index:
 
                 self.log_failure(
-                    dataset_name,
-                    "DQ-05",
-                    "WARNING",
-                    int(idx),
-                    "Completely Empty Row"
+                    dataset_name, "DQ-05", "WARNING", int(idx), "Completely Empty Row"
                 )
 
         self.save_report()

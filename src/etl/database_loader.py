@@ -1,10 +1,11 @@
-#Creates SQLite database and executes schema.sql
+# Creates SQLite database and executes schema.sql
 import sqlite3
-from pathlib import Path
-from src.utils.paths import DATABASE_FILE, BASE_DIR
-import pandas as pd
-from src.etl.loader import load_all_data
 from datetime import datetime
+
+import pandas as pd
+
+from src.etl.loader import load_all_data
+from src.utils.paths import BASE_DIR, DATABASE_FILE
 
 
 class DatabaseLoader:
@@ -45,42 +46,28 @@ class DatabaseLoader:
 
             start = datetime.now()
 
-            df.to_sql(
-                table_name,
-                conn,
-                if_exists="replace",
-                index=False
-            )
+            df.to_sql(table_name, conn, if_exists="replace", index=False)
 
             end = datetime.now()
 
             audit.append(
                 {
-                "table_name": table_name,
-                "rows_loaded": len(df),
-                "columns": len(df.columns),
-                "status": "SUCCESS",
-                "load_time_ms": round(
-                    (end - start).total_seconds() * 1000,
-                    2
-                ),
+                    "table_name": table_name,
+                    "rows_loaded": len(df),
+                    "columns": len(df.columns),
+                    "status": "SUCCESS",
+                    "load_time_ms": round((end - start).total_seconds() * 1000, 2),
                 }
             )
 
-            print(
-                f"[OK] {table_name:<20}"
-                f"Rows : {len(df)}"
-            )
+            print(f"[OK] {table_name:<20}" f"Rows : {len(df)}")
 
         conn.commit()
         conn.close()
 
         audit_df = pd.DataFrame(audit)
 
-        audit_df.to_csv(
-            "output/load_audit.csv",
-            index=False
-        )
+        audit_df.to_csv("output/load_audit.csv", index=False)
 
         print("\nAll Tables Loaded Successfully.")
 
@@ -91,20 +78,16 @@ class DatabaseLoader:
         connection = sqlite3.connect(self.database)
 
         columns = [
-        "company_id",
-        "year",
-        "free_cash_flow_cr",
-        "capex_cr",
-        "cash_from_operations_cr"
+            "company_id",
+            "year",
+            "free_cash_flow_cr",
+            "capex_cr",
+            "cash_from_operations_cr",
         ]
 
         connection.execute("DROP TABLE IF EXISTS financial_ratios")
 
-        df[columns].to_sql(
-        "financial_ratios",
-        connection,
-        index=False
-        )
+        df[columns].to_sql("financial_ratios", connection, index=False)
 
         connection.commit()
         connection.close()
@@ -112,7 +95,8 @@ class DatabaseLoader:
         print()
         print("=" * 60)
         print("Financial Ratios Saved Successfully.")
-        print("=" * 60) 
+        print("=" * 60)
+
 
 if __name__ == "__main__":
 

@@ -1,9 +1,7 @@
+import pandas as pd
 from fastapi import APIRouter, HTTPException
 
-import pandas as pd
-
 from src.services.ratio_engine import DatasetBuilder
-
 
 router = APIRouter(
     prefix="/valuation",
@@ -42,20 +40,11 @@ def get_valuation(ticker: str):
     # Clean year
     # --------------------------------------------------
 
-    df["year"] = (
-        df["year"]
-        .astype(str)
-        .str.extract(r"(\d{4})")[0]
-    )
+    df["year"] = df["year"].astype(str).str.extract(r"(\d{4})")[0]
 
-    df["year"] = pd.to_numeric(
-        df["year"],
-        errors="coerce"
-    )
+    df["year"] = pd.to_numeric(df["year"], errors="coerce")
 
-    df = df.dropna(
-        subset=["year"]
-    )
+    df = df.dropna(subset=["year"])
 
     df["year"] = df["year"].astype(int)
 
@@ -65,34 +54,18 @@ def get_valuation(ticker: str):
 
     latest_year = df["year"].max()
 
-    latest = df[
-        df["year"] == latest_year
-    ].copy()
+    latest = df[df["year"] == latest_year].copy()
 
-    latest = (
-        latest
-        .drop_duplicates(
-            subset=["company_id"],
-            keep="first"
-        )
-    )
+    latest = latest.drop_duplicates(subset=["company_id"], keep="first")
 
     # --------------------------------------------------
     # Find company
     # --------------------------------------------------
 
-    company = latest[
-        latest["company_id"]
-        .astype(str)
-        .str.upper()
-        == ticker.upper()
-    ]
+    company = latest[latest["company_id"].astype(str).str.upper() == ticker.upper()]
 
     if company.empty:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Company '{ticker}' not found"
-        )
+        raise HTTPException(status_code=404, detail=f"Company '{ticker}' not found")
 
     row = company.iloc[0]
 
@@ -104,28 +77,10 @@ def get_valuation(ticker: str):
         "company_id": row["company_id"],
         "company_name": row["company_name"],
         "year": int(row["year"]),
-
-        "market_cap_crore": clean_value(
-            row.get("market_cap_crore")
-        ),
-
-        "enterprise_value_crore": clean_value(
-            row.get("enterprise_value_crore")
-        ),
-
-        "pe_ratio": clean_value(
-            row.get("pe_ratio")
-        ),
-
-        "pb_ratio": clean_value(
-            row.get("pb_ratio")
-        ),
-
-        "ev_ebitda": clean_value(
-            row.get("ev_ebitda")
-        ),
-
-        "dividend_yield_pct": clean_value(
-            row.get("dividend_yield_pct")
-        ),
+        "market_cap_crore": clean_value(row.get("market_cap_crore")),
+        "enterprise_value_crore": clean_value(row.get("enterprise_value_crore")),
+        "pe_ratio": clean_value(row.get("pe_ratio")),
+        "pb_ratio": clean_value(row.get("pb_ratio")),
+        "ev_ebitda": clean_value(row.get("ev_ebitda")),
+        "dividend_yield_pct": clean_value(row.get("dividend_yield_pct")),
     }

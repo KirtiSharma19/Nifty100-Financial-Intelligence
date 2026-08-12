@@ -1,9 +1,7 @@
-from typing import Optional
 
 from fastapi import APIRouter, Query
 
 from src.services.ratio_engine import DatasetBuilder
-
 
 router = APIRouter(
     prefix="/portfolio",
@@ -34,27 +32,16 @@ def get_latest_data():
 
     df = DatasetBuilder().build_dataset()
 
-    df["year"] = (
-        df["year"]
-        .astype(str)
-        .str.extract(r"(\d{4})")[0]
-    )
+    df["year"] = df["year"].astype(str).str.extract(r"(\d{4})")[0]
 
     df["year"] = df["year"].astype(int)
 
     latest_year = df["year"].max()
 
-    latest = df[
-        df["year"] == latest_year
-    ].copy()
+    latest = df[df["year"] == latest_year].copy()
 
-    latest = (
-        latest
-        .drop_duplicates(
-            subset=["company_id"],
-            keep="first"
-        )
-        .reset_index(drop=True)
+    latest = latest.drop_duplicates(subset=["company_id"], keep="first").reset_index(
+        drop=True
     )
 
     return latest
@@ -62,13 +49,11 @@ def get_latest_data():
 
 @router.get("")
 def get_portfolio(
-    companies: Optional[str] = Query(
-        default=None,
-        description="Comma-separated company IDs"
+    companies: str | None = Query(
+        default=None, description="Comma-separated company IDs"
     ),
-    sector: Optional[str] = Query(
-        default=None,
-        description="Filter portfolio by sector"
+    sector: str | None = Query(
+        default=None, description="Filter portfolio by sector"
     ),
 ):
     """
@@ -89,12 +74,7 @@ def get_portfolio(
             if company.strip()
         ]
 
-        df = df[
-            df["company_id"]
-            .astype(str)
-            .str.upper()
-            .isin(company_list)
-        ]
+        df = df[df["company_id"].astype(str).str.upper().isin(company_list)]
 
     # --------------------------------------------------
     # SECTOR FILTER
@@ -103,13 +83,7 @@ def get_portfolio(
     if sector:
 
         df = df[
-            df["broad_sector"]
-            .astype(str)
-            .str.contains(
-                sector,
-                case=False,
-                na=False
-            )
+            df["broad_sector"].astype(str).str.contains(sector, case=False, na=False)
         ]
 
     # --------------------------------------------------
@@ -128,12 +102,7 @@ def get_portfolio(
     # SECTOR DISTRIBUTION
     # --------------------------------------------------
 
-    sector_counts = (
-        df["broad_sector"]
-        .fillna("Unknown")
-        .value_counts()
-        .to_dict()
-    )
+    sector_counts = df["broad_sector"].fillna("Unknown").value_counts().to_dict()
 
     total_companies = len(df)
 
@@ -143,10 +112,7 @@ def get_portfolio(
 
         sector_distribution[name] = {
             "count": int(count),
-            "percentage": round(
-                (count / total_companies) * 100,
-                2
-            ),
+            "percentage": round((count / total_companies) * 100, 2),
         }
 
     # --------------------------------------------------
@@ -160,10 +126,8 @@ def get_portfolio(
         "debt_to_equity": "debt_to_equity",
         "revenue_cagr_5yr": "revenue_cagr_5yr",
         "fcf_cagr_5yr": "fcf_cagr_5yr",
-        "operating_margin_pct":
-            "operating_profit_margin_pct",
-        "net_profit_margin_pct":
-            "net_profit_margin_pct",
+        "operating_margin_pct": "operating_profit_margin_pct",
+        "net_profit_margin_pct": "net_profit_margin_pct",
         "quality_score": "quality_score",
         "composite_score": "composite_score",
     }
@@ -179,26 +143,11 @@ def get_portfolio(
             continue
 
         statistics[output_name] = {
-            "mean": round(
-                float(values.mean()),
-                2
-            ),
-            "median": round(
-                float(values.median()),
-                2
-            ),
-            "minimum": round(
-                float(values.min()),
-                2
-            ),
-            "maximum": round(
-                float(values.max()),
-                2
-            ),
-            "std": round(
-                float(values.std()),
-                2
-            ),
+            "mean": round(float(values.mean()), 2),
+            "median": round(float(values.median()), 2),
+            "minimum": round(float(values.min()), 2),
+            "maximum": round(float(values.max()), 2),
+            "std": round(float(values.std()), 2),
         }
 
     # --------------------------------------------------
@@ -211,42 +160,13 @@ def get_portfolio(
 
         company_results.append(
             {
-                "company_id":
-                    row["company_id"],
-
-                "company_name":
-                    row["company_name"],
-
-                "broad_sector":
-                    row["broad_sector"],
-
-                "roe_pct":
-                    clean_value(
-                        row.get(
-                            "return_on_equity_pct"
-                        )
-                    ),
-
-                "debt_to_equity":
-                    clean_value(
-                        row.get(
-                            "debt_to_equity"
-                        )
-                    ),
-
-                "quality_score":
-                    clean_value(
-                        row.get(
-                            "quality_score"
-                        )
-                    ),
-
-                "composite_score":
-                    clean_value(
-                        row.get(
-                            "composite_score"
-                        )
-                    ),
+                "company_id": row["company_id"],
+                "company_name": row["company_name"],
+                "broad_sector": row["broad_sector"],
+                "roe_pct": clean_value(row.get("return_on_equity_pct")),
+                "debt_to_equity": clean_value(row.get("debt_to_equity")),
+                "quality_score": clean_value(row.get("quality_score")),
+                "composite_score": clean_value(row.get("composite_score")),
             }
         )
 
@@ -254,8 +174,6 @@ def get_portfolio(
         "year": int(df["year"].max()),
         "company_count": len(df),
         "companies": company_results,
-        "sector_distribution":
-            sector_distribution,
-        "statistics":
-            statistics,
+        "sector_distribution": sector_distribution,
+        "statistics": statistics,
     }

@@ -1,9 +1,7 @@
 from pathlib import Path
-from typing import Optional
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
-
 
 router = APIRouter(
     prefix="/documents",
@@ -40,6 +38,7 @@ DOCUMENTS = {
 # LIST AVAILABLE DOCUMENTS
 # --------------------------------------------------
 
+
 @router.get("")
 def list_documents():
     """
@@ -57,11 +56,7 @@ def list_documents():
                 "filename": path.name,
                 "path": str(path),
                 "available": path.exists(),
-                "size_bytes": (
-                    path.stat().st_size
-                    if path.exists()
-                    else None
-                ),
+                "size_bytes": (path.stat().st_size if path.exists() else None),
             }
         )
 
@@ -75,6 +70,7 @@ def list_documents():
 # GET ONE DOCUMENT
 # --------------------------------------------------
 
+
 @router.get("/{document_name}")
 def get_document(document_name: str):
     """
@@ -85,8 +81,7 @@ def get_document(document_name: str):
 
     if document_name not in DOCUMENTS:
         raise HTTPException(
-            status_code=404,
-            detail=f"Document '{document_name}' not found"
+            status_code=404, detail=f"Document '{document_name}' not found"
         )
 
     path = DOCUMENTS[document_name]
@@ -94,10 +89,7 @@ def get_document(document_name: str):
     if not path.exists():
         raise HTTPException(
             status_code=404,
-            detail=(
-                f"Document '{document_name}' "
-                "has not been generated yet"
-            )
+            detail=(f"Document '{document_name}' " "has not been generated yet"),
         )
 
     return FileResponse(

@@ -1,4 +1,3 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 
 from src.services.ratio_engine import DatasetBuilder
@@ -15,12 +14,7 @@ df = engine.build_dataset()
 # Fix Year
 # -----------------------------------
 
-df["year"] = (
-    df["year"]
-    .astype(str)
-    .str.extract(r"(\d{4})")[0]
-    .astype(int)
-)
+df["year"] = df["year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
 
 # -----------------------------------
 # Latest Year
@@ -43,10 +37,7 @@ cashflow = latest[
     ]
 ]
 
-cashflow = cashflow.sort_values(
-    "free_cash_flow_cr",
-    ascending=False
-)
+cashflow = cashflow.sort_values("free_cash_flow_cr", ascending=False)
 
 print()
 print("=" * 70)
@@ -59,10 +50,7 @@ print(cashflow.head(10))
 # Export Report
 # -----------------------------------
 
-cashflow.to_csv(
-    "exports/cashflow_report.csv",
-    index=False
-)
+cashflow.to_csv("exports/cashflow_report.csv", index=False)
 
 print()
 print("Cashflow Report Saved")
@@ -73,12 +61,9 @@ print("Cashflow Report Saved")
 
 top = cashflow.head(10)
 
-plt.figure(figsize=(12,6))
+plt.figure(figsize=(12, 6))
 
-plt.bar(
-    top["company_name"],
-    top["free_cash_flow_cr"]
-)
+plt.bar(top["company_name"], top["free_cash_flow_cr"])
 
 plt.xticks(rotation=45, ha="right")
 
@@ -88,8 +73,6 @@ plt.title("Top 10 Free Cash Flow Companies")
 
 plt.tight_layout()
 
-plt.savefig(
-    "exports/charts/cashflow_chart.png"
-)
+plt.savefig("exports/charts/cashflow_chart.png")
 
 plt.show()

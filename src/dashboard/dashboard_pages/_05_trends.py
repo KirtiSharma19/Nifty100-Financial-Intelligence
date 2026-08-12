@@ -1,5 +1,5 @@
-import streamlit as st
 import plotly.express as px
+import streamlit as st
 
 from src.services.ratio_engine import DatasetBuilder
 
@@ -12,26 +12,13 @@ def show():
 
     df = engine.build_dataset()
 
-    companies = sorted(
+    companies = sorted(df["company_name"].dropna().astype(str).unique())
 
-    df["company_name"]
-    .dropna()
-    .astype(str)
-    .unique()
-    )
+    company = st.selectbox("Select Company", companies)
 
-    company = st.selectbox(
-        "Select Company",
-        companies
-    )
-
-    company_df = (
-        df[df["company_name"] == company]
-        .sort_values("year")
-    )
+    company_df = df[df["company_name"] == company].sort_values("year")
 
     metrics = [
-
         "sales",
         "net_profit",
         "operating_profit",
@@ -39,80 +26,34 @@ def show():
         "net_profit_margin_pct",
         "operating_profit_margin_pct",
         "debt_to_equity",
-        "free_cash_flow_cr"
-
+        "free_cash_flow_cr",
     ]
 
     selected_metrics = st.multiselect(
-
-        "Select Metrics",
-
-        metrics,
-
-        default=[
-            "sales",
-            "net_profit"
-        ]
-
+        "Select Metrics", metrics, default=["sales", "net_profit"]
     )
 
     if len(selected_metrics) == 0:
 
-        st.warning(
-            "Select at least one metric."
-        )
+        st.warning("Select at least one metric.")
 
         return
 
     st.subheader(company)
 
-    fig = px.line(
+    fig = px.line(company_df, x="year", y=selected_metrics, markers=True)
 
-        company_df,
+    fig.update_layout(xaxis_title="Year", yaxis_title="Value", hovermode="x unified")
 
-        x="year",
-
-        y=selected_metrics,
-
-        markers=True
-
-    )
-
-    fig.update_layout(
-
-        xaxis_title="Year",
-
-        yaxis_title="Value",
-
-        hovermode="x unified"
-
-    )
-
-    st.plotly_chart(
-
-        fig,
-
-        use_container_width=True
-
-    )
+    st.plotly_chart(fig, use_container_width=True)
 
     st.divider()
 
     st.subheader("Trend Table")
 
-    cols = [
+    cols = ["year"] + selected_metrics
 
-        "year"
-
-    ] + selected_metrics
-
-    st.dataframe(
-
-        company_df[cols],
-
-        use_container_width=True
-
-    )
+    st.dataframe(company_df[cols], use_container_width=True)
 
     st.divider()
 
@@ -122,75 +63,27 @@ def show():
 
     c1, c2, c3 = st.columns(3)
 
-    c1.metric(
+    c1.metric("Sales", f"{latest['sales']:,.0f}")
 
-        "Sales",
+    c2.metric("Net Profit", f"{latest['net_profit']:,.0f}")
 
-        f"{latest['sales']:,.0f}"
-
-    )
-
-    c2.metric(
-
-        "Net Profit",
-
-        f"{latest['net_profit']:,.0f}"
-
-    )
-
-    c3.metric(
-
-        "ROE",
-
-        round(
-            latest["return_on_equity_pct"],
-            2
-        )
-
-    )
+    c3.metric("ROE", round(latest["return_on_equity_pct"], 2))
 
     c4, c5, c6 = st.columns(3)
 
-    c4.metric(
+    c4.metric("Operating Profit", f"{latest['operating_profit']:,.0f}")
 
-        "Operating Profit",
+    c5.metric("Net Margin", round(latest["net_profit_margin_pct"], 2))
 
-        f"{latest['operating_profit']:,.0f}"
-
-    )
-
-    c5.metric(
-
-        "Net Margin",
-
-        round(
-            latest["net_profit_margin_pct"],
-            2
-        )
-
-    )
-
-    c6.metric(
-
-        "Free Cash Flow",
-
-        round(
-            latest["free_cash_flow_cr"],
-            2
-        )
-
-    )
+    c6.metric("Free Cash Flow", round(latest["free_cash_flow_cr"], 2))
 
     st.divider()
 
     st.subheader("Year-wise Financial Data")
 
     st.dataframe(
-
         company_df[
-
             [
-
                 "year",
                 "sales",
                 "operating_profit",
@@ -199,12 +92,8 @@ def show():
                 "net_profit_margin_pct",
                 "operating_profit_margin_pct",
                 "debt_to_equity",
-                "free_cash_flow_cr"
-
+                "free_cash_flow_cr",
             ]
-
         ],
-
-        use_container_width=True
-
+        use_container_width=True,
     )

@@ -18,9 +18,7 @@ sector_report = (
     .sort_values("quality_score", ascending=False)
 )
 
-sector_report.to_csv(
-    "exports/sector_report.csv"
-)
+sector_report.to_csv("exports/sector_report.csv")
 
 print()
 print("Sector Report Generated Successfully")

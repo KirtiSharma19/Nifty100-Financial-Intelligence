@@ -1,11 +1,11 @@
 import os
-import pandas as pd
 
+import pandas as pd
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import (
-    SimpleDocTemplate,
     Paragraph,
+    SimpleDocTemplate,
     Spacer,
     Table,
     TableStyle,
@@ -28,10 +28,7 @@ for _, row in df.iterrows():
 
     sector = str(row["broad_sector"]).replace("/", "-").replace("\\", "-")
 
-    pdf_file = os.path.join(
-        OUTPUT_DIR,
-        f"{sector}_report.pdf"
-    )
+    pdf_file = os.path.join(OUTPUT_DIR, f"{sector}_report.pdf")
 
     doc = SimpleDocTemplate(pdf_file)
 

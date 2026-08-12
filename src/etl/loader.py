@@ -1,5 +1,6 @@
+
 import pandas as pd
-from pathlib import Path
+
 from src.utils.paths import RAW_DATA_DIR
 
 # List of all datasets
@@ -15,7 +16,7 @@ DATASETS = {
     "market_cap": "market_cap.xlsx",
     "peer_groups": "peer_groups.xlsx",
     "sectors": "sectors.xlsx",
-    "stock_prices": "stock_prices.xlsx"
+    "stock_prices": "stock_prices.xlsx",
 }
 
 
@@ -50,7 +51,7 @@ def load_all_data():
                 "cashflow",
                 "analysis",
                 "documents",
-                "prosandcons"
+                "prosandcons",
             ]:
                 df = pd.read_excel(file_path, header=1)
 
@@ -60,9 +61,7 @@ def load_all_data():
             data[name] = df
 
             print(
-                f"[OK] {name:<20}"
-                f" Rows: {df.shape[0]:<6}"
-                f" Columns: {df.shape[1]}"
+                f"[OK] {name:<20}" f" Rows: {df.shape[0]:<6}" f" Columns: {df.shape[1]}"
             )
 
         except Exception as e:

@@ -1,17 +1,10 @@
 import os
-import pandas as pd
 
+import pandas as pd
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
-
-from reportlab.platypus import (
-    SimpleDocTemplate,
-    Table,
-    TableStyle,
-    Paragraph,
-    Spacer
-)
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 # -------------------------------------------------
 
@@ -53,73 +46,45 @@ for _, row in df.iterrows():
 
     # -------------------------------------------------
 
-    title = Paragraph(
-        f"<b>{company}</b>",
-        styles["Title"]
-    )
+    title = Paragraph(f"<b>{company}</b>", styles["Title"])
 
     story.append(title)
     story.append(Spacer(1, 0.25 * inch))
 
-    story.append(
-        Paragraph(
-            f"<b>Sector:</b> {row['broad_sector']}",
-            styles["Normal"]
-        )
-    )
+    story.append(Paragraph(f"<b>Sector:</b> {row['broad_sector']}", styles["Normal"]))
 
     story.append(Spacer(1, 0.20 * inch))
 
     # -------------------------------------------------
 
     table_data = [
-
         ["Metric", "Value"],
-
         ["Quality Score", row["quality_score"]],
-
         ["ROE %", row["return_on_equity_pct"]],
-
         ["Net Profit Margin %", row["net_profit_margin_pct"]],
-
         ["Debt / Equity", row["debt_to_equity"]],
-
         ["Free Cash Flow (Cr)", row["free_cash_flow_cr"]],
-
         ["Market Cap (Cr)", row["market_cap_crore"]],
-
         ["Enterprise Value (Cr)", row["enterprise_value_crore"]],
-
         ["PE Ratio", row["pe_ratio"]],
-
         ["PB Ratio", row["pb_ratio"]],
-
         ["EV / EBITDA", row["ev_ebitda"]],
-
-        ["Dividend Yield %", row["dividend_yield_pct"]]
-
+        ["Dividend Yield %", row["dividend_yield_pct"]],
     ]
 
     table = Table(table_data)
 
     table.setStyle(
-
-        TableStyle([
-
-            ("BACKGROUND", (0, 0), (-1, 0), colors.darkblue),
-
-            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-
-            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
-
-            ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
-
-            ("BOTTOMPADDING", (0, 0), (-1, 0), 10),
-
-            ("ALIGN", (0, 0), (-1, -1), "CENTER")
-
-        ])
-
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.darkblue),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 10),
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+            ]
+        )
     )
 
     story.append(table)

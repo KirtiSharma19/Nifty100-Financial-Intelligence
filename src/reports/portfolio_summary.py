@@ -1,9 +1,9 @@
 import os
-import pandas as pd
 
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+import pandas as pd
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Table, TableStyle
 
 INPUT_FILE = "exports/final_financial_report.csv"
 
@@ -22,35 +22,34 @@ story = []
 
 story.append(Paragraph("<b>Nifty100 Portfolio Summary</b>", styles["Title"]))
 
-table_data = [[
-    "Company",
-    "Sector",
-    "Quality",
-    "ROE",
-    "Net Margin",
-    "PE"
-]]
+table_data = [["Company", "Sector", "Quality", "ROE", "Net Margin", "PE"]]
 
 for _, row in df.iterrows():
 
-    table_data.append([
-        row["company_name"],
-        row["broad_sector"],
-        row["quality_score"],
-        row["return_on_equity_pct"],
-        row["net_profit_margin_pct"],
-        row["pe_ratio"]
-    ])
+    table_data.append(
+        [
+            row["company_name"],
+            row["broad_sector"],
+            row["quality_score"],
+            row["return_on_equity_pct"],
+            row["net_profit_margin_pct"],
+            row["pe_ratio"],
+        ]
+    )
 
 table = Table(table_data)
 
-table.setStyle(TableStyle([
-    ("BACKGROUND", (0, 0), (-1, 0), colors.darkblue),
-    ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-    ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
-    ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
-    ("FONTSIZE", (0, 0), (-1, -1), 8),
-]))
+table.setStyle(
+    TableStyle(
+        [
+            ("BACKGROUND", (0, 0), (-1, 0), colors.darkblue),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+            ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+            ("FONTSIZE", (0, 0), (-1, -1), 8),
+        ]
+    )
+)
 
 story.append(table)
 

@@ -1,11 +1,10 @@
 from pathlib import Path
 
-from src.services.ratio_engine import DatasetBuilder
-from src.screener.engine import ScreenerEngine
 from src.analytics.peer import PeerEngine
 from src.analytics.radar_chart import RadarChartEngine
 from src.reports.peer_report import PeerReport
-
+from src.screener.engine import ScreenerEngine
+from src.services.ratio_engine import DatasetBuilder
 
 print("=" * 70)
 print("SPRINT 3 TEST SUITE")
@@ -39,11 +38,7 @@ print("\n[2] Screener")
 
 screen = ScreenerEngine()
 
-result = screen.screen(
-    roe_min=15,
-    debt_max=1,
-    quality_min=70
-)
+result = screen.screen(roe_min=15, debt_max=1, quality_min=70)
 
 assert len(result) > 0
 
@@ -75,9 +70,7 @@ print("\n[4] Radar Charts")
 
 RadarChartEngine().generate()
 
-assert Path(
-    "exports/radar_charts"
-).exists()
+assert Path("exports/radar_charts").exists()
 
 print("PASS")
 
@@ -90,9 +83,7 @@ print("\n[5] Peer Report")
 
 PeerReport().generate()
 
-assert Path(
-    "exports/peer_comparison.xlsx"
-).exists()
+assert Path("exports/peer_comparison.xlsx").exists()
 
 print("PASS")
 
@@ -104,21 +95,13 @@ print("PASS")
 print("\n[6] CSV Reports")
 
 required = [
-
     "exports/final_financial_report.csv",
-
     "exports/cashflow_report.csv",
-
     "exports/cagr_report.csv",
-
     "exports/valuation_report.csv",
-
     "exports/sector_report.csv",
-
     "exports/screener_output.csv",
-
-    "exports/peer_comparison.csv"
-
+    "exports/peer_comparison.csv",
 ]
 
 for file in required:

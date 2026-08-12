@@ -1,11 +1,9 @@
-from typing import Optional
 import math
 
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Query
 
 from src.services.ratio_engine import DatasetBuilder
-
 
 router = APIRouter(
     prefix="/sectors",
@@ -16,6 +14,7 @@ router = APIRouter(
 # ============================================================
 # JSON SAFE VALUE
 # ============================================================
+
 
 def clean_value(value):
     """
@@ -39,6 +38,7 @@ def clean_value(value):
 # ============================================================
 # CALCULATE 5-YEAR CAGR
 # ============================================================
+
 
 def calculate_cagr(start_value, end_value, years):
     """
@@ -73,10 +73,7 @@ def calculate_cagr(start_value, end_value, years):
         if end_value < 0:
             return None
 
-        return round(
-            (((end_value / start_value) ** (1 / years)) - 1) * 100,
-            2
-        )
+        return round((((end_value / start_value) ** (1 / years)) - 1) * 100, 2)
 
     except (TypeError, ValueError, ZeroDivisionError):
         return None
@@ -85,6 +82,7 @@ def calculate_cagr(start_value, end_value, years):
 # ============================================================
 # ADD 5-YEAR CAGR COLUMNS
 # ============================================================
+
 
 def add_cagr_columns(df):
     """
@@ -103,11 +101,7 @@ def add_cagr_columns(df):
 
     for company_id in df["company_id"].dropna().unique():
 
-        company_df = (
-            df[df["company_id"] == company_id]
-            .sort_values("year")
-            .copy()
-        )
+        company_df = df[df["company_id"] == company_id].sort_values("year").copy()
 
         if company_df.empty:
             continue
@@ -115,13 +109,9 @@ def add_cagr_columns(df):
         latest_year = company_df["year"].max()
         start_year = latest_year - 5
 
-        latest_rows = company_df[
-            company_df["year"] == latest_year
-        ]
+        latest_rows = company_df[company_df["year"] == latest_year]
 
-        start_rows = company_df[
-            company_df["year"] == start_year
-        ]
+        start_rows = company_df[company_df["year"] == start_year]
 
         # A true 5-year CAGR needs both endpoints.
         if latest_rows.empty or start_rows.empty:
@@ -131,28 +121,18 @@ def add_cagr_columns(df):
         start_row = start_rows.iloc[0]
 
         revenue_cagr = calculate_cagr(
-            start_row.get("sales"),
-            latest_row.get("sales"),
-            5
+            start_row.get("sales"), latest_row.get("sales"), 5
         )
 
         fcf_cagr = calculate_cagr(
-            start_row.get("free_cash_flow_cr"),
-            latest_row.get("free_cash_flow_cr"),
-            5
+            start_row.get("free_cash_flow_cr"), latest_row.get("free_cash_flow_cr"), 5
         )
 
         latest_index = latest_row.name
 
-        df.loc[
-            latest_index,
-            "revenue_cagr_5yr"
-        ] = revenue_cagr
+        df.loc[latest_index, "revenue_cagr_5yr"] = revenue_cagr
 
-        df.loc[
-            latest_index,
-            "fcf_cagr_5yr"
-        ] = fcf_cagr
+        df.loc[latest_index, "fcf_cagr_5yr"] = fcf_cagr
 
     return df
 
@@ -160,6 +140,7 @@ def add_cagr_columns(df):
 # ============================================================
 # GET LATEST DATA
 # ============================================================
+
 
 def get_latest_data():
     """
@@ -176,12 +157,7 @@ def get_latest_data():
     # Normalize year
     # --------------------------------------------------------
 
-    df["year"] = (
-        df["year"]
-        .astype(str)
-        .str.extract(r"(\d{4})")[0]
-        .astype(int)
-    )
+    df["year"] = df["year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
 
     # --------------------------------------------------------
     # Calculate CAGR BEFORE filtering latest year
@@ -195,21 +171,14 @@ def get_latest_data():
 
     latest_year = df["year"].max()
 
-    latest = df[
-        df["year"] == latest_year
-    ].copy()
+    latest = df[df["year"] == latest_year].copy()
 
     # --------------------------------------------------------
     # One record per company
     # --------------------------------------------------------
 
-    latest = (
-        latest
-        .drop_duplicates(
-            subset=["company_id"],
-            keep="first"
-        )
-        .reset_index(drop=True)
+    latest = latest.drop_duplicates(subset=["company_id"], keep="first").reset_index(
+        drop=True
     )
 
     return latest
@@ -219,12 +188,10 @@ def get_latest_data():
 # GET ALL SECTORS
 # ============================================================
 
+
 @router.get("")
 def get_sectors(
-    search: Optional[str] = Query(
-        default=None,
-        description="Search sector name"
-    )
+    search: str | None = Query(default=None, description="Search sector name")
 ):
     """
     Return sector-wise financial summary.
@@ -236,9 +203,7 @@ def get_sectors(
     # Remove missing sectors
     # --------------------------------------------------------
 
-    df = df[
-        df["broad_sector"].notna()
-    ].copy()
+    df = df[df["broad_sector"].notna()].copy()
 
     # --------------------------------------------------------
     # Optional search
@@ -246,13 +211,7 @@ def get_sectors(
 
     if search:
         df = df[
-            df["broad_sector"]
-            .astype(str)
-            .str.contains(
-                search,
-                case=False,
-                na=False
-            )
+            df["broad_sector"].astype(str).str.contains(search, case=False, na=False)
         ]
 
     # --------------------------------------------------------
@@ -262,50 +221,15 @@ def get_sectors(
     sector_summary = (
         df.groupby("broad_sector")
         .agg(
-            company_count=(
-                "company_id",
-                "nunique"
-            ),
-
-            avg_roe_pct=(
-                "return_on_equity_pct",
-                "mean"
-            ),
-
-            median_roe_pct=(
-                "return_on_equity_pct",
-                "median"
-            ),
-
-            avg_debt_to_equity=(
-                "debt_to_equity",
-                "mean"
-            ),
-
-            avg_revenue_cagr_5yr=(
-                "revenue_cagr_5yr",
-                "mean"
-            ),
-
-            avg_fcf_cagr_5yr=(
-                "fcf_cagr_5yr",
-                "mean"
-            ),
-
-            avg_operating_margin_pct=(
-                "operating_profit_margin_pct",
-                "mean"
-            ),
-
-            avg_quality_score=(
-                "quality_score",
-                "mean"
-            ),
-
-            avg_composite_score=(
-                "composite_score",
-                "mean"
-            ),
+            company_count=("company_id", "nunique"),
+            avg_roe_pct=("return_on_equity_pct", "mean"),
+            median_roe_pct=("return_on_equity_pct", "median"),
+            avg_debt_to_equity=("debt_to_equity", "mean"),
+            avg_revenue_cagr_5yr=("revenue_cagr_5yr", "mean"),
+            avg_fcf_cagr_5yr=("fcf_cagr_5yr", "mean"),
+            avg_operating_margin_pct=("operating_profit_margin_pct", "mean"),
+            avg_quality_score=("quality_score", "mean"),
+            avg_composite_score=("composite_score", "mean"),
         )
         .reset_index()
     )
@@ -314,15 +238,9 @@ def get_sectors(
     # Sort by quality score
     # --------------------------------------------------------
 
-    sector_summary = (
-        sector_summary
-        .sort_values(
-            "avg_quality_score",
-            ascending=False,
-            na_position="last"
-        )
-        .round(2)
-    )
+    sector_summary = sector_summary.sort_values(
+        "avg_quality_score", ascending=False, na_position="last"
+    ).round(2)
 
     # --------------------------------------------------------
     # Build JSON response
@@ -335,42 +253,17 @@ def get_sectors(
         results.append(
             {
                 "sector": row["broad_sector"],
-
-                "company_count": int(
-                    row["company_count"]
-                ),
-
-                "avg_roe_pct": clean_value(
-                    row["avg_roe_pct"]
-                ),
-
-                "median_roe_pct": clean_value(
-                    row["median_roe_pct"]
-                ),
-
-                "avg_debt_to_equity": clean_value(
-                    row["avg_debt_to_equity"]
-                ),
-
-                "avg_revenue_cagr_5yr": clean_value(
-                    row["avg_revenue_cagr_5yr"]
-                ),
-
-                "avg_fcf_cagr_5yr": clean_value(
-                    row["avg_fcf_cagr_5yr"]
-                ),
-
+                "company_count": int(row["company_count"]),
+                "avg_roe_pct": clean_value(row["avg_roe_pct"]),
+                "median_roe_pct": clean_value(row["median_roe_pct"]),
+                "avg_debt_to_equity": clean_value(row["avg_debt_to_equity"]),
+                "avg_revenue_cagr_5yr": clean_value(row["avg_revenue_cagr_5yr"]),
+                "avg_fcf_cagr_5yr": clean_value(row["avg_fcf_cagr_5yr"]),
                 "avg_operating_margin_pct": clean_value(
                     row["avg_operating_margin_pct"]
                 ),
-
-                "avg_quality_score": clean_value(
-                    row["avg_quality_score"]
-                ),
-
-                "avg_composite_score": clean_value(
-                    row["avg_composite_score"]
-                ),
+                "avg_quality_score": clean_value(row["avg_quality_score"]),
+                "avg_composite_score": clean_value(row["avg_composite_score"]),
             }
         )
 
@@ -385,13 +278,9 @@ def get_sectors(
 # GET COMPANIES INSIDE ONE SECTOR
 # ============================================================
 
+
 @router.get("/{sector_name}")
-def get_sector_details(
-    sector_name: str,
-    sort_by: str = Query(
-        default="quality_score"
-    )
-):
+def get_sector_details(sector_name: str, sort_by: str = Query(default="quality_score")):
     """
     Return companies belonging to a specific sector.
     """
@@ -403,10 +292,7 @@ def get_sector_details(
     # --------------------------------------------------------
 
     sector_df = df[
-        df["broad_sector"]
-        .astype(str)
-        .str.lower()
-        == sector_name.lower()
+        df["broad_sector"].astype(str).str.lower() == sector_name.lower()
     ].copy()
 
     # --------------------------------------------------------
@@ -414,10 +300,7 @@ def get_sector_details(
     # --------------------------------------------------------
 
     if sector_df.empty:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Sector '{sector_name}' not found"
-        )
+        raise HTTPException(status_code=404, detail=f"Sector '{sector_name}' not found")
 
     # --------------------------------------------------------
     # Allowed sorting columns
@@ -440,11 +323,7 @@ def get_sector_details(
     # Sort
     # --------------------------------------------------------
 
-    sector_df = sector_df.sort_values(
-        sort_by,
-        ascending=False,
-        na_position="last"
-    )
+    sector_df = sector_df.sort_values(sort_by, ascending=False, na_position="last")
 
     # --------------------------------------------------------
     # Build company response
@@ -456,59 +335,18 @@ def get_sector_details(
 
         companies.append(
             {
-                "company_id": clean_value(
-                    row["company_id"]
-                ),
-
-                "company_name": clean_value(
-                    row["company_name"]
-                ),
-
-                "sub_sector": clean_value(
-                    row["sub_sector"]
-                ),
-
-                "roe_pct": clean_value(
-                    row.get(
-                        "return_on_equity_pct"
-                    )
-                ),
-
-                "debt_to_equity": clean_value(
-                    row.get(
-                        "debt_to_equity"
-                    )
-                ),
-
-                "revenue_cagr_5yr": clean_value(
-                    row.get(
-                        "revenue_cagr_5yr"
-                    )
-                ),
-
-                "fcf_cagr_5yr": clean_value(
-                    row.get(
-                        "fcf_cagr_5yr"
-                    )
-                ),
-
+                "company_id": clean_value(row["company_id"]),
+                "company_name": clean_value(row["company_name"]),
+                "sub_sector": clean_value(row["sub_sector"]),
+                "roe_pct": clean_value(row.get("return_on_equity_pct")),
+                "debt_to_equity": clean_value(row.get("debt_to_equity")),
+                "revenue_cagr_5yr": clean_value(row.get("revenue_cagr_5yr")),
+                "fcf_cagr_5yr": clean_value(row.get("fcf_cagr_5yr")),
                 "operating_margin_pct": clean_value(
-                    row.get(
-                        "operating_profit_margin_pct"
-                    )
+                    row.get("operating_profit_margin_pct")
                 ),
-
-                "quality_score": clean_value(
-                    row.get(
-                        "quality_score"
-                    )
-                ),
-
-                "composite_score": clean_value(
-                    row.get(
-                        "composite_score"
-                    )
-                ),
+                "quality_score": clean_value(row.get("quality_score")),
+                "composite_score": clean_value(row.get("composite_score")),
             }
         )
 
@@ -518,9 +356,7 @@ def get_sector_details(
 
     return {
         "sector": sector_name,
-        "year": int(
-            sector_df["year"].max()
-        ),
+        "year": int(sector_df["year"].max()),
         "company_count": len(companies),
         "companies": companies,
     }

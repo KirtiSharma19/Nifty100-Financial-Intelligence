@@ -1,13 +1,7 @@
 class CompositeScore:
 
     @staticmethod
-    def calculate(
-        roe,
-        net_margin,
-        free_cash_flow,
-        debt_to_equity,
-        dividend_yield
-    ):
+    def calculate(roe, net_margin, free_cash_flow, debt_to_equity, dividend_yield):
 
         score = 0
 

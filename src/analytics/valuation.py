@@ -17,10 +17,7 @@ market_df = pd.read_excel("data/raw/market_cap.xlsx")
 # -----------------------------
 
 financial_df["year"] = (
-    financial_df["year"]
-    .astype(str)
-    .str.extract(r"(\d{4})")[0]
-    .astype(int)
+    financial_df["year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
 )
 
 market_df["year"] = market_df["year"].astype(int)
@@ -29,9 +26,7 @@ market_df["year"] = market_df["year"].astype(int)
 # Keep Recent Years
 # -----------------------------
 
-financial_df = financial_df[
-    financial_df["year"] >= 2019
-]
+financial_df = financial_df[financial_df["year"] >= 2019]
 
 # -----------------------------
 # Keep Required Columns
@@ -54,11 +49,7 @@ market_df = market_df[
 # Merge
 # -----------------------------
 
-merged = financial_df.merge(
-    market_df,
-    on=["company_id", "year"],
-    how="left"
-)
+merged = financial_df.merge(market_df, on=["company_id", "year"], how="left")
 # -----------------------------
 # Valuation Metrics
 # -----------------------------
@@ -67,22 +58,13 @@ merged["earnings_yield"] = 100 / merged["pe_ratio"]
 
 merged["book_yield"] = 100 / merged["pb_ratio"]
 
-merged["valuation_score"] = (
-    merged["earnings_yield"] +
-    merged["book_yield"]
-) / 2
+merged["valuation_score"] = (merged["earnings_yield"] + merged["book_yield"]) / 2
 
 # -----------------------------
 # Top Valuation Companies
 # -----------------------------
 
-top_valuation = (
-    merged.sort_values(
-        "valuation_score",
-        ascending=False
-    )
-    .head(10)
-)
+top_valuation = merged.sort_values("valuation_score", ascending=False).head(10)
 
 print()
 print("=" * 70)
@@ -97,7 +79,7 @@ print(
             "valuation_score",
             "pe_ratio",
             "pb_ratio",
-            "market_cap_crore"
+            "market_cap_crore",
         ]
     ]
 )
@@ -118,12 +100,9 @@ print("Missing Market Cap :", merged["market_cap_crore"].isna().sum())
 
 import matplotlib.pyplot as plt
 
-plt.figure(figsize=(12,6))
+plt.figure(figsize=(12, 6))
 
-plt.bar(
-    top_valuation["company_name"],
-    top_valuation["valuation_score"]
-)
+plt.bar(top_valuation["company_name"], top_valuation["valuation_score"])
 
 plt.xticks(rotation=45, ha="right")
 
@@ -133,16 +112,11 @@ plt.title("Top 10 Valuation Companies")
 
 plt.tight_layout()
 
-plt.savefig(
-    "exports/charts/valuation_score.png"
-)
+plt.savefig("exports/charts/valuation_score.png")
 
 plt.show()
 
-top_valuation.to_csv(
-    "exports/valuation_report.csv",
-    index=False
-)
+top_valuation.to_csv("exports/valuation_report.csv", index=False)
 
 print()
 print("Valuation Report Saved Successfully")

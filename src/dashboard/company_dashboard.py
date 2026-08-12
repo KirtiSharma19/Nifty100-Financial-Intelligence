@@ -1,5 +1,5 @@
-import streamlit as st
 import matplotlib.pyplot as plt
+import streamlit as st
 
 from src.services.ratio_engine import DatasetBuilder
 
@@ -18,12 +18,7 @@ def show_company_dashboard():
     # Clean Year
     # -----------------------------------------
 
-    df["year"] = (
-        df["year"]
-        .astype(str)
-        .str.extract(r"(\d{4})")[0]
-        .astype(int)
-    )
+    df["year"] = df["year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
 
     # -----------------------------------------
     # Company Selection
@@ -32,17 +27,10 @@ def show_company_dashboard():
     st.title("Company Dashboard")
 
     company = st.selectbox(
-        "Select Company",
-        sorted(
-            df["company_name"]
-            .dropna()
-            .unique()
-        )
+        "Select Company", sorted(df["company_name"].dropna().unique())
     )
 
-    company_df = df[
-        df["company_name"] == company
-    ].sort_values("year")
+    company_df = df[df["company_name"] == company].sort_values("year")
 
     latest = company_df.iloc[-1]
 
@@ -54,54 +42,46 @@ def show_company_dashboard():
 
     col1, col2, col3, col4 = st.columns(4)
 
-    col1.metric(
-        "Quality Score",
-        round(latest["quality_score"],2)
-    )
+    col1.metric("Quality Score", round(latest["quality_score"], 2))
 
-    col2.metric(
-        "ROE %",
-        round(latest["return_on_equity_pct"],2)
-    )
+    col2.metric("ROE %", round(latest["return_on_equity_pct"], 2))
 
-    col3.metric(
-        "Net Margin %",
-        round(latest["net_profit_margin_pct"],2)
-    )
+    col3.metric("Net Margin %", round(latest["net_profit_margin_pct"], 2))
 
-    col4.metric(
-        "Debt / Equity",
-        round(latest["debt_to_equity"],2)
-    )
+    col4.metric("Debt / Equity", round(latest["debt_to_equity"], 2))
 
     st.divider()
 
     col5, col6, col7, col8 = st.columns(4)
 
-    col5.metric(
-        "Free Cash Flow",
-        round(latest["free_cash_flow_cr"],2)
-    )
+    col5.metric("Free Cash Flow", round(latest["free_cash_flow_cr"], 2))
 
     col6.metric(
         "Market Cap",
-        f"{latest['market_cap_crore']:,.0f}"
-        if not st.session_state.get("_dummy") and latest["market_cap_crore"] == latest["market_cap_crore"]
-        else "-"
+        (
+            f"{latest['market_cap_crore']:,.0f}"
+            if not st.session_state.get("_dummy")
+            and latest["market_cap_crore"] == latest["market_cap_crore"]
+            else "-"
+        ),
     )
 
     col7.metric(
         "Enterprise Value",
-        f"{latest['enterprise_value_crore']:,.0f}"
-        if latest["enterprise_value_crore"] == latest["enterprise_value_crore"]
-        else "-"
+        (
+            f"{latest['enterprise_value_crore']:,.0f}"
+            if latest["enterprise_value_crore"] == latest["enterprise_value_crore"]
+            else "-"
+        ),
     )
 
     col8.metric(
         "Dividend Yield %",
-        round(latest["dividend_yield_pct"],2)
-        if latest["dividend_yield_pct"] == latest["dividend_yield_pct"]
-        else "-"
+        (
+            round(latest["dividend_yield_pct"], 2)
+            if latest["dividend_yield_pct"] == latest["dividend_yield_pct"]
+            else "-"
+        ),
     )
 
     st.divider()
@@ -110,23 +90,29 @@ def show_company_dashboard():
 
     col9.metric(
         "PE Ratio",
-        round(latest["pe_ratio"],2)
-        if latest["pe_ratio"] == latest["pe_ratio"]
-        else "-"
+        (
+            round(latest["pe_ratio"], 2)
+            if latest["pe_ratio"] == latest["pe_ratio"]
+            else "-"
+        ),
     )
 
     col10.metric(
         "PB Ratio",
-        round(latest["pb_ratio"],2)
-        if latest["pb_ratio"] == latest["pb_ratio"]
-        else "-"
+        (
+            round(latest["pb_ratio"], 2)
+            if latest["pb_ratio"] == latest["pb_ratio"]
+            else "-"
+        ),
     )
 
     col11.metric(
         "EV / EBITDA",
-        round(latest["ev_ebitda"],2)
-        if latest["ev_ebitda"] == latest["ev_ebitda"]
-        else "-"
+        (
+            round(latest["ev_ebitda"], 2)
+            if latest["ev_ebitda"] == latest["ev_ebitda"]
+            else "-"
+        ),
     )
     # =====================================================
     # COMPANY TRENDS
@@ -144,13 +130,13 @@ def show_company_dashboard():
 
         st.subheader("ROE Trend")
 
-        fig, ax = plt.subplots(figsize=(6,4))
+        fig, ax = plt.subplots(figsize=(6, 4))
 
         ax.plot(
             company_df["year"],
             company_df["return_on_equity_pct"],
             marker="o",
-            linewidth=2
+            linewidth=2,
         )
 
         ax.set_xlabel("Year")
@@ -166,13 +152,13 @@ def show_company_dashboard():
 
         st.subheader("Net Profit Margin")
 
-        fig, ax = plt.subplots(figsize=(6,4))
+        fig, ax = plt.subplots(figsize=(6, 4))
 
         ax.plot(
             company_df["year"],
             company_df["net_profit_margin_pct"],
             marker="o",
-            linewidth=2
+            linewidth=2,
         )
 
         ax.set_xlabel("Year")
@@ -192,12 +178,9 @@ def show_company_dashboard():
 
         st.subheader("Free Cash Flow")
 
-        fig, ax = plt.subplots(figsize=(6,4))
+        fig, ax = plt.subplots(figsize=(6, 4))
 
-        ax.bar(
-            company_df["year"],
-            company_df["free_cash_flow_cr"]
-        )
+        ax.bar(company_df["year"], company_df["free_cash_flow_cr"])
 
         ax.set_ylabel("Cash Flow (Cr)")
 
@@ -209,13 +192,10 @@ def show_company_dashboard():
 
         st.subheader("Debt / Equity")
 
-        fig, ax = plt.subplots(figsize=(6,4))
+        fig, ax = plt.subplots(figsize=(6, 4))
 
         ax.plot(
-            company_df["year"],
-            company_df["debt_to_equity"],
-            marker="o",
-            linewidth=2
+            company_df["year"], company_df["debt_to_equity"], marker="o", linewidth=2
         )
 
         ax.set_ylabel("Debt / Equity")
@@ -234,13 +214,10 @@ def show_company_dashboard():
 
         st.subheader("Market Cap")
 
-        fig, ax = plt.subplots(figsize=(6,4))
+        fig, ax = plt.subplots(figsize=(6, 4))
 
         ax.plot(
-            company_df["year"],
-            company_df["market_cap_crore"],
-            marker="o",
-            linewidth=2
+            company_df["year"], company_df["market_cap_crore"], marker="o", linewidth=2
         )
 
         ax.set_ylabel("Market Cap")
@@ -253,13 +230,13 @@ def show_company_dashboard():
 
         st.subheader("Enterprise Value")
 
-        fig, ax = plt.subplots(figsize=(6,4))
+        fig, ax = plt.subplots(figsize=(6, 4))
 
         ax.plot(
             company_df["year"],
             company_df["enterprise_value_crore"],
             marker="o",
-            linewidth=2
+            linewidth=2,
         )
 
         ax.set_ylabel("Enterprise Value")
@@ -291,15 +268,11 @@ def show_company_dashboard():
         "dividend_yield_pct",
     ]
 
-    available_columns = [
-        col for col in history_columns
-        if col in company_df.columns
-    ]
+    available_columns = [col for col in history_columns if col in company_df.columns]
 
     st.dataframe(
-        company_df[available_columns]
-        .sort_values("year", ascending=False),
-        use_container_width=True
+        company_df[available_columns].sort_values("year", ascending=False),
+        use_container_width=True,
     )
 
     # =====================================================
@@ -314,8 +287,7 @@ def show_company_dashboard():
 
     with left:
 
-        st.info(
-            f"""
+        st.info(f"""
 **Current PE Ratio**
 
 {latest['pe_ratio']:.2f}
@@ -327,13 +299,11 @@ def show_company_dashboard():
 **EV / EBITDA**
 
 {latest['ev_ebitda']:.2f}
-"""
-        )
+""")
 
     with right:
 
-        st.success(
-            f"""
+        st.success(f"""
 **Market Cap**
 
 ₹ {latest['market_cap_crore']:,.0f} Cr
@@ -345,8 +315,7 @@ def show_company_dashboard():
 **Dividend Yield**
 
 {latest['dividend_yield_pct']:.2f} %
-"""
-        )
+""")
 
     # =====================================================
     # DOWNLOAD REPORT
