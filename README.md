@@ -227,35 +227,6 @@ The project also provides a **FastAPI REST API** for accessing financial intelli
 | 📤 Exports | [Exports](exports/) |
 | ⚙️ Requirements | [requirements.txt](requirements.txt) |
 
----
-## 🔗 Quick Links
-
-| Resource | Link |
-|---|---|
-| 📦 Repository | [Open Repository](.) |
-| 📊 Streamlit Dashboard | [Dashboard Source](src/dashboard/app.py) |
-| 🔌 FastAPI Application | [API Source](src/api/main.py) |
-| 🏭 Sector API | [Sectors API](src/api/routers/sectors.py) |
-| 🔎 Screener API | [Screener API](src/api/routers/screener.py) |
-| 🏢 Companies API | [Companies API](src/api/routers/companies.py) |
-| 👥 Peer API | [Peers API](src/api/routers/peers.py) |
-| 💰 Valuation API | [Valuation API](src/api/routers/valuation.py) |
-| 💼 Portfolio API | [Portfolio API](src/api/routers/portfolio.py) |
-| 📄 Documents API | [Documents API](src/api/routers/documents.py) |
-| 🧮 Ratio Engine | [Ratio Engine](src/services/ratio_engine.py) |
-| 📈 Ratio Analytics | [Ratios](src/analytics/ratios.py) |
-| 📈 CAGR Analysis | [CAGR](src/analytics/cagr.py) |
-| 💵 Cash Flow Analysis | [Cash Flow Intelligence](src/analytics/cashflow_intelligence.py) |
-| ⭐ Company Scoring | [Company Score](src/analytics/company_score.py) |
-| 🏆 Composite Scoring | [Composite Score](src/analytics/composite_score.py) |
-| 👥 Peer Analysis | [Peer Analysis](src/analytics/peer.py) |
-| 🏭 Clustering | [Clustering](src/analytics/clustering.py) |
-| 📊 Radar Charts | [Radar Charts](src/analytics/radar_chart.py) |
-| 💰 Valuation Analysis | [Valuation](src/analytics/valuation.py) |
-| 🧪 Tests | [Tests Folder](tests/) |
-| 📁 Reports | [Reports](reports/) |
-| 📤 Exports | [Exports](exports/) |
-| ⚙️ Requirements | [requirements.txt](requirements.txt) |
 
 ---
                     ┌─────────────────────────┐
@@ -294,88 +265,13 @@ The project also provides a **FastAPI REST API** for accessing financial intelli
       │  Streamlit  │     │   FastAPI   │     │   Reports   │
       │  Dashboard  │     │     API     │     │ CSV / Excel │
       └─────────────┘     └─────────────┘     └─────────────┘
-
-NIFTY100-Financial-Intelligence/
-│
-├── data/
-│
-├── database/
-│
-├── exports/
-│   ├── charts/
-│   ├── radar_charts/
-│   ├── reports/
-│   ├── peer_comparison.csv
-│   ├── peer_comparison.xlsx
-│   └── screener_output.csv
-│
-├── reports/
-│   ├── portfolio/
-│   ├── sector/
-│   └── tearsheets/
-│
-├── src/
-│   │
-│   ├── analytics/
-│   │   ├── cagr.py
-│   │   ├── cashflow_intelligence.py
-│   │   ├── cashflow_kpis.py
-│   │   ├── cluster_statistics.py
-│   │   ├── clustering.py
-│   │   ├── company_score.py
-│   │   ├── composite_score.py
-│   │   ├── peer.py
-│   │   ├── radar_chart.py
-│   │   ├── ratios.py
-│   │   └── valuation.py
-│   │
-│   ├── api/
-│   │   ├── main.py
-│   │   └── routers/
-│   │       ├── companies.py
-│   │       ├── documents.py
-│   │       ├── peers.py
-│   │       ├── portfolio.py
-│   │       ├── screener.py
-│   │       ├── sectors.py
-│   │       └── valuation.py
-│   │
-│   ├── config/
-│   │
-│   ├── dashboard/
-│   │   └── app.py
-│   │
-│   ├── etl/
-│   │
-│   ├── models/
-│   │
-│   ├── nlp/
-│   │
-│   ├── reports/
-│   │
-│   ├── screener/
-│   │
-│   ├── services/
-│   │   └── ratio_engine.py
-│   │
-│   └── utils/
-│
-├── tests/
-│   ├── api/
-│   ├── etl/
-│   ├── kpi/
-│   └── ...
-│
-├── requirements.txt
-├── pytest.ini
-└── README.md
-
+---
 ### Run Dashboard
 streamlit run src/dashboard/app.py
 The dashboard will normally open at:
 
 http://localhost:8501
-
+---
 ### Quick Start
 For Windows:
 
